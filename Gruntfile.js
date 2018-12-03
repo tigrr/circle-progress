@@ -70,6 +70,12 @@ module.exports = function (grunt) {
 				}
 			}
 		},
+		copy: {
+			dist: {
+				dest: 'public/js/circle-progress.js',
+				src: 'dist/circle-progress.js',
+			}
+		},
 		watch: {
 			src: {
 				files: 'src/**/*',
@@ -78,5 +84,5 @@ module.exports = function (grunt) {
 		},
 	});
 
-	grunt.registerTask('build', ['clean', 'concat', 'babel', 'uglify']);
+	grunt.registerTask('build', ['clean', 'concat', 'babel', 'uglify', 'copy']);
 };
