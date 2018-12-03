@@ -2,6 +2,8 @@
 
 > Responsive, accessible, animated, stylable with CSS circular progress bar available as plain (vanilla) JavaScript and jQuery plugin.
 
+![](https://i.imgur.com/gpxlBmm.png)
+
 See [examples][examples] or go to the [project site][site]
 
 
