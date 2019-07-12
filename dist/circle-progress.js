@@ -1,6 +1,6 @@
 /*!
- * Circle Progress - v0.0.0 - 2018-12-03
- * https://tigrr.gitlab.io/circle-progress/
+ * Circle Progress - v0.0.0 - 2019-07-13
+ * https://tigrr.github.io/circle-progress
  * Copyright (c) Tigran Sargsyan
  * Licensed MIT
  */

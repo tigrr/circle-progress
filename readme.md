@@ -151,8 +151,8 @@ Chrome, Firefox, Safari, Edge and IE 11 are supported.
 Licensed under ([the MIT License][license])
 
 
-[vanilla-min]: https://gitlab.com/tigrr/circle-progress/raw/master/dist/circle-progress.js
-[jquery-min]: https://gitlab.com/tigrr/circle-progress/raw/master/dist/jquery.circle-progress.js
-[site]: https://tigrr.gitlab.io/circle-progress/
-[examples]: https://tigrr.gitlab.io/circle-progress/examples.html
-[license]: https://gitlab.com/tigrr/circle-progress/blob/master/LICENSE
+[vanilla-min]: https://github.com/tigrr/circle-progress/raw/master/dist/circle-progress.js
+[jquery-min]: https://github.com/tigrr/circle-progress/raw/master/dist/jquery.circle-progress.js
+[site]: https://tigrr.github.io/circle-progress/
+[examples]: https://tigrr.github.io/circle-progress/examples.html
+[license]: https://github.com/tigrr/circle-progress/blob/master/LICENSE

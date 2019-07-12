@@ -9,15 +9,15 @@
 	"author": {
 		"name": "Tigran Sargsyan",
 		"email": "tigran.sn@gmail.com",
-		"url": "https://gitlab.com/tigrr"
+		"url": "https://github.com/tigrr"
 	},
-	"homepage": "https://tigrr.gitlab.io/circle-progress/",
+	"homepage": "https://tigrr.github.io/circle-progress/",
 	"repository": {
 		"type": "git",
-		"url": "https://gitlab.com/tigrr/circle-progress.git"
+		"url": "https://github.com/tigrr/circle-progress.git"
 	},
 	"bugs": {
-		"url": "https://gitlab.com/tigrr/circle-progress/issues"
+		"url": "https://github.com/tigrr/circle-progress/issues"
 	},
 	"license": "MIT",
 	"main": "dist/circle-progress.min.js",
