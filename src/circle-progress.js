@@ -140,6 +140,7 @@ class CircleProgress {
 			paper: svgpaper(el, 100, 100),
 			angle: 0,
 		};
+		this.graph.paper.svg.setAttribute('class', 'circle-progress');
 		this.graph.circle = this.graph.paper.element('circle').attr({
 			class: 'circle-progress-circle',
 			cx: 50,
