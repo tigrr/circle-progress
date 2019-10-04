@@ -128,7 +128,7 @@ The elements are:
 
 | Class                        | Description |
 | ---------------------------  | ----------- |
-| `circle-progress-svg`        | The svg image. You can use this selector to scale the widget. E. g.: `.circle-progress-svg {width: 200px; height: auto;}` |
+| `circle-progress`            | The svg image. You can use this selector to scale the widget. E. g.: `.circle-progress {width: 200px; height: auto;}` |
 | `circle-progress-circle`     | The entire circle (SVG circle element) |
 | `circle-progress-value`      | The arc representing currently filled progress (SVG path element) |
 | `circle-progress-text`       | Text controlled by `textFormat` option (SVG text element) |
