@@ -72,7 +72,7 @@ module.exports = function (grunt) {
 		},
 		copy: {
 			dist: {
-				dest: 'public/js/circle-progress.js',
+				dest: 'docs/js/circle-progress.js',
 				src: 'dist/circle-progress.js',
 			}
 		},
