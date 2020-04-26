@@ -24,8 +24,8 @@ const util = {
 		 * @return {object}       Cartesian coordinates as object: {x, y}
 		 */
 		polarToCartesian: (r, angle) => ({
-			  x: r * Math.cos(angle * Math.PI / 180),
-			  y: r * Math.sin(angle * Math.PI / 180),
+			x: r * Math.cos(angle * Math.PI / 180),
+			y: r * Math.sin(angle * Math.PI / 180),
 		})
 	}
 };
@@ -282,7 +282,7 @@ class CircleProgress {
 	 * @return {float} Angle in degrees
 	 */
 	_valToAngle() {
-		var angle;
+		let angle;
 		if(this._isIndeterminate()) return 0;
 		if(this.max === 0) return this.value ? 360 : 0;
 		angle = (this.value - this.min) / this.max * 360;
@@ -314,7 +314,14 @@ class CircleProgress {
 	 */
 	static _makeSectorPath(cx, cy, r, startAngle, angle, clockwise) {
 		clockwise = !!clockwise;
-		const endAngle = startAngle + (angle === 360 ? angle - 0.001 : angle) * (clockwise * 2 - 1),
+		if(angle > 0 && angle < 0.3) {
+			// Tiny angles smaller than ~0.3° can produce weird-looking paths
+			angle = 0;
+		} else if(angle > 359.999) {
+			// If progress is full, notch it back a little, so the path doesn't become 0-length
+			angle = 359.999
+		}
+		const endAngle = startAngle + angle * (clockwise * 2 - 1),
 			startCoords = util.math.polarToCartesian(r, startAngle),
 			endCoords = util.math.polarToCartesian(r, endAngle),
 			x1 = cx + startCoords.x,
@@ -397,14 +404,13 @@ class CircleProgress {
 			angle = this._valToAngle(this.value);
 			r = this._getRadius();
 			clockwise = this.clockwise;
+			this.graph.circle.attr('r', r);
 			if(this.animation !== 'none' && angle !== this.graph.angle) {
 				animator(this.animation, this.graph.angle, angle - this.graph.angle, this.animationDuration, angle => {
 					this.graph.sector.attr('d', CircleProgress._makeSectorPath(50, 50, r, startAngle, angle, clockwise));
-					this.graph.circle.attr('r', r);
 				});
 			} else {
 				this.graph.sector.attr('d', CircleProgress._makeSectorPath(50, 50, r, startAngle, angle, clockwise));
-				this.graph.circle.attr('r', r);
 			}
 			this.graph.angle = angle;
 			if(this.textFormat === 'valueOnCircle') {
