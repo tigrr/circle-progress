@@ -1,6 +1,6 @@
 {
 	"name": "circle-progress",
-	"version": "0.1.0",
+	"version": "0.1.1",
 	"description": "Responsive, accessible, animated, stylable with CSS circular progress bar available as plain (vanilla) JS and jQuery plugin.",
 	"keywords": [
 		"progressbar",

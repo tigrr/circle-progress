@@ -268,8 +268,12 @@ class CircleProgress {
 				}
 				break;
 			case 'animation':
-				if(typeof val !== 'string') throw new TypeError(`Failed to set "animation" property on CircleProgress: the value must be string, ${typeof val} passed.`);
-				if(val !== 'none' && !animator.easings[val]) throw new Error(`Failed to set "animation" on CircleProgress: the provided value ${val} is not a legal easing function name.`);
+				if(typeof val !== 'string' && typeof val !== 'function') {
+					throw new TypeError(`Failed to set "animation" property on CircleProgress: the value must be either string or function, ${typeof val} passed.`);
+				}
+				if(typeof val === 'string' && val !== 'none' && !animator.easings[val]) {
+					throw new Error(`Failed to set "animation" on CircleProgress: the provided value ${val} is not a legal easing function name.`);
+				}
 				break;
 		}
 		return val;

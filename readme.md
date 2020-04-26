@@ -1,6 +1,6 @@
 # Circle Progress
 
-> Responsive, accessible, animated, stylable with CSS circular progress bar available as plain (vanilla) JavaScript and jQuery plugin.
+> Lightweight (4.6kB minified and gzipped), responsive, accessible, animated, stylable with CSS circular progress bar available as plain (vanilla) JavaScript and jQuery plugin.
 
 ![](https://i.imgur.com/gpxlBmm.png)
 
@@ -120,8 +120,36 @@ $('.progress').circleProgress({
 | constrain  | Boolean | true    | Whether the value should be constrained between `min` and `max`. If true, values over `max` will be truncated to `max` and values under `min` will be set to `min`. |
 | indeterminateText | String | '?' | Text to display as the value when it is indeterminate |
 | textFormat | String or Function | 'horizontal' | Text layout for value, min, max. <br> You can pass either one of the possible keywords: <br> `horizontal` - <samp>value/max</samp> <br> `vertical` - value is shown over max <br> `percent` - <samp>value%</samp> <br> `value` - only value is shown <br> `valueOnCircle` - the value is painted on top of the filled region on the circle <br> `none` - no text is shown. <br>Alternatively you can provide your own function, which will be called each time progress is updated with value and max as arguments and is expected to return a string to insert in the center of the progress circle |
-| animation  | String  | 'easeInOutCubic' | Animation easing function. One of `linear`, `easeInCubic`, `easeOutCubic`, `easeInOutCubic`, `easeInQuadr`, `easeOutQuadr`, `easeInOutQuadr` or `none` |
+| animation  | String or Function | 'easeInOutCubic' | Animation easing function. Can be a string keyword (see the table below for available easings) or `'none'`.<br>Alternatively, you can pass your own function with the signature <br>`function(time, startAngle, angleDiff, duration)`.<br> The function will be called on each animation frame with the current time (milliseconds since animation start), starting angle, difference in angle (i.e. endAngle - startAngle) and animation duration as arguments, and must return the current angle. |
 | animationDuration | Number | 600 | Animation duration in milliseconds |
+
+
+The predefined animation easing functions:
+
+| Easing name    | Easing |
+| -----------    | ------ |
+| linear         | Linear |
+| easeInQuad     | Quadratic easing in |
+| easeOutQuad    | Quadratic easing out |
+| easeInOutQuad  | Quadratic easing in/out |
+| easeInCubic    | Cubic easing in |
+| easeOutCubic   | Cubic easing out |
+| easeInOutCubic | Cubic easing in/out |
+| easeInQuart    | Quartic (power of 4) easing in |
+| easeOutQuart   | Quartic easing out |
+| easeInOutQuart | Quartic easing in/out |
+| easeInQuint    | Quintic (power of 5) easing in |
+| easeOutQuint   | Quintic easing out |
+| easeInOutQuint | Quintic easing in/out |
+| easeInSine     | Sinusoidal easing in |
+| easeOutSine    | Sinusoidal easing out |
+| easeInOutSine  | Sinusoidal easing in/out |
+| easeInExpo     | Exponential easing in |
+| easeOutExpo    | Exponential easing out |
+| easeInOutExpo  | Exponential easing in/out |
+| easeInCirc     | Circular easing in |
+| easeOutCirc    | Circular easing out |
+| easeInOutCirc  | Circular easing in/out |
 
 To customize widget's appearance, you can style its underlying SVG elements with CSS.
 The elements are:
