@@ -1,38 +1,95 @@
-// Source: https://gist.github.com/jarek-foksa/2648095
+// Source: https://github.com/rogodec/svg-innerhtml-polyfill
 
-// Important: You must serve your pages as XHTML for this shim to work,
-// otherwise namespaced attributes and elements will get messed up.
-if(!SVGElement.prototype.hasOwnProperty('innerHTML')) {
-Object.defineProperty(SVGElement.prototype, 'innerHTML', {
-  get: function() {
-    var $child, $node, $temp, _i, _len, _ref;
-    $temp = document.createElement('div');
-    $node = this.cloneNode(true);
-    _ref = $node.childNodes;
-    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-      $child = _ref[_i];
-      $temp.appendChild($child);
+(function () {
+  try {
+    if (typeof SVGElement === 'undefined' || Boolean(SVGElement.prototype.innerHTML)) {
+      return;
     }
-    return $temp.innerHTML;
-  },
-  set: function(markup) {
-    var $div, $element, $svg, _i, _len, _ref, _results;
-    while (this.firstChild) {
-      this.firstChild.parentNode.removeChild(this.firstChild);
+  } catch (e) {
+      return;
+  }
+
+  function serializeNode (node) {
+    switch (node.nodeType) {
+      case 1:
+        return serializeElementNode(node);
+      case 3:
+        return serializeTextNode(node);
+      case 8:
+        return serializeCommentNode(node);
     }
-    markup = "<svg id='wrapper' xmlns='http://www.w3.org/2000/svg'>" + markup + "</svg>";
-    $div = document.createElement('div');
-    $div.innerHTML = markup;
-    $svg = $div.querySelector('svg#wrapper');
-    _ref = $svg.childNodes;
-    _results = [];
-    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-      $element = _ref[_i];
-      _results.push(this.appendChild($element));
+  }
+
+  function serializeTextNode (node) {
+      return node.textContent.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  function serializeCommentNode (node) {
+      return '<!--' + node.nodeValue + '-->'
+  }
+
+  function serializeElementNode (node) {
+      var output = '';
+
+      output += '<' + node.tagName;
+
+      if (node.hasAttributes()) {
+          [].forEach.call(node.attributes, function(attrNode) {
+              output += ' ' + attrNode.name + '="' + attrNode.value + '"'
+          })
+      }
+
+      output += '>';
+
+      if (node.hasChildNodes()) {
+          [].forEach.call(node.childNodes, function(childNode) {
+              output += serializeNode(childNode);
+          });
+      }
+
+      output += '</' + node.tagName + '>';
+
+      return output;
+  }
+
+  Object.defineProperty(SVGElement.prototype, 'innerHTML', {
+    get: function () {
+      var output = '';
+
+      [].forEach.call(this.childNodes, function(childNode) {
+          output += serializeNode(childNode);
+      });
+
+      return output;
+    },
+    set: function (markup) {
+      while (this.firstChild) {
+        this.removeChild(this.firstChild);
+      }
+
+      try {
+        var dXML = new DOMParser();
+        dXML.async = false;
+
+        var sXML = '<svg xmlns=\'http://www.w3.org/2000/svg\' xmlns:xlink=\'http://www.w3.org/1999/xlink\'>' + markup + '</svg>';
+        var svgDocElement = dXML.parseFromString(sXML, 'text/xml').documentElement;
+
+        [].forEach.call(svgDocElement.childNodes, function(childNode) {
+            this.appendChild(this.ownerDocument.importNode(childNode, true));
+        }.bind(this));
+      } catch (e) {
+          throw new Error('Error parsing markup string');
+      }
     }
-    return _results;
-  },
-  enumerable: false,
-  configurable: true
-});
-}
+  });
+
+  Object.defineProperty(SVGElement.prototype, 'innerSVG', {
+    get: function () {
+      return this.innerHTML;
+    },
+    set: function (markup) {
+      this.innerHTML = markup;
+    }
+  });
+
+})();

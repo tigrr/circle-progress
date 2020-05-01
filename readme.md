@@ -1,6 +1,6 @@
 # Circle Progress
 
-> Lightweight (4.6kB minified and gzipped), responsive, accessible, animated, stylable with CSS circular progress bar available as plain (vanilla) JavaScript and jQuery plugin.
+> Lightweight (less than 5kB minified and gzipped), responsive, accessible, animated, stylable with CSS circular progress bar available as plain (vanilla) JavaScript and jQuery plugin.
 
 ![](https://i.imgur.com/gpxlBmm.png)
 
