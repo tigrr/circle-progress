@@ -150,7 +150,8 @@ class CircleProgress {
 			stroke: '#ddd',
 			'stroke-width': circleThickness,
 		});
-		this.graph.sector = this.graph.paper.path(CircleProgress._makeSectorPath(50, 50, 50 - circleThickness / 2, 0, 0)).attr({
+		this.graph.sector = this.graph.paper.element('path').attr({
+			d: CircleProgress._makeSectorPath(50, 50, 50 - circleThickness / 2, 0, 0),
 			class: 'circle-progress-value',
 			fill: 'none',
 			stroke: '#00E699',

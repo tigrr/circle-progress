@@ -52,62 +52,9 @@ paperproto = {
 
 		el = element(this, name, attrs, parent);
 		if(content) el.el.innerHTML = content;
-		
+
 		return el;
 	},
-	/**
-	 * Create an element by name (shortcut)
-	 * @param  {string} name Element name
-	 * @param  {Array}  args Array (or array-like object) of arguments required by the shape
-	 * @return {Object}      Element
-	 */
-	_shortcutElement: function(name, args) {
-		var attrNames, attrs = {}, content;
-
-		switch(name) {
-		case 'rect':
-			attrNames = ['x', 'y', 'width', 'height', 'r'];
-			break;
-		case 'circle':
-			attrNames = ['cx', 'cy', 'r'];
-			break;
-		case 'path':
-			attrNames = ['d'];
-			break;
-		case 'text':
-			attrNames = ['x', 'y'];
-			content = args[3];
-			break;
-		}
-
-		if(attrNames.length !== args.length) throw new Error('Unexpected number of arguments to ' + name + '. Expected ' + attrNames.length + ' arguments, got ' + args.length);
-		attrNames.forEach(function(key) {
-			attrs[key] = args[key];
-		});
-
-		return this.element.apply(this, [name, attrs, content]);
-	},
-	/**
-	 * Create rectangle
-	 * @return {object} Element
-	 */
-	rect: function() {
-		return this._shortcutElement('rect', arguments);
-	},
-	/**
-	 * Create circle
-	 * @return {object} Element
-	 */
-	circle: function() {
-		return this._shortcutElement('circle', arguments);
-	},
-	/**
-	 * Create path element
-	 * @return {object} Element
-	 */
-	path: function() {
-		return this._shortcutElement('path', arguments);
-	}
 };
 
 /**
