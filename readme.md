@@ -9,6 +9,33 @@ See [examples][examples] or go to the [project site][site]
 
 ## Getting Started
 
+### Using npm
+
+Navigate to your project directory and install the Circle Progress module
+```shell
+$ npm install --save js-circle-progress
+```
+
+Given you have this element in your html:
+```html
+<div class="progress"></div>
+```
+
+In your script:
+
+```js
+import CircleProgress from 'js-circle-progress'
+
+const cp = new CircleProgress('.progress', {
+    value: 50,
+    max: 100,
+})
+```
+
+Note: you can currently only use plain JavaScript version as an npm module (not jQuery). If you need the jQuery version, please [file an issue](https://github.com/tigrr/circle-progress/issues/new).
+
+### Manually downloading the script
+
 ### As plain JavaScript
 
 Download the minified [production version][vanilla-min]
@@ -179,8 +206,8 @@ Chrome, Firefox, Safari, Edge and IE 11 are supported.
 Licensed under ([the MIT License][license])
 
 
-[vanilla-min]: https://github.com/tigrr/circle-progress/raw/master/dist/circle-progress.js
-[jquery-min]: https://github.com/tigrr/circle-progress/raw/master/dist/jquery.circle-progress.js
+[vanilla-min]: https://github.com/tigrr/circle-progress/raw/master/dist/circle-progress.min.js
+[jquery-min]: https://github.com/tigrr/circle-progress/raw/master/dist/jquery.circle-progress.min.js
 [site]: https://tigrr.github.io/circle-progress/
 [examples]: https://tigrr.github.io/circle-progress/examples.html
 [license]: https://github.com/tigrr/circle-progress/blob/master/LICENSE

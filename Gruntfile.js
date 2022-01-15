@@ -148,9 +148,9 @@ module.exports = function (grunt) {
 			},
 			dist: {
 				files: {
-					'dist/circle-progress.js': 'dist/circle-progress.js',
-					'dist/jquery.circle-progress.js': 'dist/jquery.circle-progress.js',
-					'dist/jquery.circle-progress.bare.js': 'dist/jquery.circle-progress.bare.js',
+					'dist/circle-progress.min.js': 'dist/circle-progress.js',
+					'dist/jquery.circle-progress.min.js': 'dist/jquery.circle-progress.js',
+					'dist/jquery.circle-progress.bare.min.js': 'dist/jquery.circle-progress.bare.js',
 				}
 			}
 		},

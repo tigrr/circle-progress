@@ -1,6 +1,6 @@
 {
-	"name": "circle-progress",
-	"version": "0.2.1",
+	"name": "js-circle-progress",
+	"version": "0.2.2",
 	"description": "Responsive, accessible, animated, stylable with CSS circular progress bar available as plain (vanilla) JS and jQuery plugin.",
 	"keywords": [
 		"progressbar",
@@ -20,7 +20,7 @@
 		"url": "https://github.com/tigrr/circle-progress/issues"
 	},
 	"license": "MIT",
-	"main": "dist/circle-progress.min.js",
+	"main": "dist/circle-progress.js",
 	"scripts": {
 		"build": "grunt build"
 	},
