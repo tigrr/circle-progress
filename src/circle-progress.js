@@ -290,7 +290,7 @@ class CircleProgress {
 		let angle;
 		if(this._isIndeterminate()) return 0;
 		if(this.max === 0) return this.value ? 360 : 0;
-		angle = (this.value - this.min) / this.max * 360;
+		angle = (this.value - this.min) / (this.max - this.min) * 360;
 		angle = Math.min(360, Math.max(0, angle));
 		return angle;
 	}
