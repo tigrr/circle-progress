@@ -1,6 +1,6 @@
 {
 	"name": "circle-progress",
-	"version": "0.2.0",
+	"version": "0.2.1",
 	"description": "Responsive, accessible, animated, stylable with CSS circular progress bar available as plain (vanilla) JS and jQuery plugin.",
 	"keywords": [
 		"progressbar",
@@ -21,6 +21,9 @@
 	},
 	"license": "MIT",
 	"main": "dist/circle-progress.min.js",
+	"scripts": {
+		"build": "grunt build"
+	},
 	"devDependencies": {
 		"@babel/core": "^7.11.4",
 		"@babel/preset-env": "^7.11.0",
