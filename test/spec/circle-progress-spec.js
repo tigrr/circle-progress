@@ -13,6 +13,12 @@ describe('Circle Progress', function() {
 		max: 100,
 	});
 
+	beforeEach(() => {
+		cp.min = -1000
+		cp.max = 1000
+		cp.constrain = false
+	})
+
 	it('sets value', function() {
 		cp.min = 0;
 		cp.max = 10;
@@ -36,6 +42,20 @@ describe('Circle Progress', function() {
 		expect(cp.max).toBe(9);
 		cp.max = '10';
 		expect(cp.max).toBe(10);
+	});
+
+	it('can set negative min and max and constrain value between them', function() {
+		cp.min = -10;
+		cp.max = 0;
+		expect(cp.min).toBe(-10);
+		expect(cp.max).toBe(0);
+		cp.max = -11;
+		expect(cp.max).toBe(0);
+		cp.constrain = true;
+		cp.value = -11;
+		expect(cp.value).toBe(-10);
+		cp.value = 1;
+		expect(cp.value).toBe(0);
 	});
 
 	it('does not accept min greater than max and max less than min', function() {

@@ -374,8 +374,6 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
   };
   /* globals svgpaper, animator */
 
-  'use strict';
-
   var CircleProgress = function () {
     /**
      * Utility functions
@@ -521,7 +519,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
         circleThickness = opts.textFormat === 'valueOnCircle' ? 16 : 8;
         this.graph = {
           paper: svgpaper(el, 100, 100),
-          angle: 0
+          value: 0
         };
         this.graph.paper.svg.setAttribute('class', 'circle-progress');
         this.graph.circle = this.graph.paper.element('circle').attr({
@@ -696,19 +694,17 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
         }
         /**
          * Convert current value to angle
+         * The caller is responsible to check if the state is not indeterminate.
+         * This is done for optimization purposes as this method is called from within an animation.
          * @private
          * @return {float} Angle in degrees
          */
 
       }, {
-        key: "_valToAngle",
-        value: function _valToAngle() {
-          var angle;
-          if (this._isIndeterminate()) return 0;
-          if (this.max === 0) return this.value ? 360 : 0;
-          angle = (this.value - this.min) / (this.max - this.min) * 360;
-          angle = Math.min(360, Math.max(0, angle));
-          return angle;
+        key: "_valueToAngle",
+        value: function _valueToAngle() {
+          var value = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.value;
+          return Math.min(360, Math.max(0, (value - this.min) / (this.max - this.min) * 360));
         }
         /**
          * Check wether the progressbar is in indeterminate state
@@ -740,9 +736,13 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
          * Position the value text on the circle
          * @private
          * @param  {float} angle Angle at which to position the text
+         * @param  {float} r Circle radius measured to the middle of the stroke
+         *                   as returned by {@link CircleProgress#_getRadius}, where text should be.
+         *                   The radius is passed rather than calculated inside the function
+         *                   for optimization purposes as this method is called from within an animation.
          */
-        value: function _positionValueText(angle) {
-          var coords = util.math.polarToCartesian(this._getRadius(), angle);
+        value: function _positionValueText(angle, r) {
+          var coords = util.math.polarToCartesian(r, angle);
           this.graph.textVal.attr({
             x: 50 + coords.x,
             y: 50 + coords.y
@@ -751,6 +751,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
         /**
          * Generate text representation of the values based on {@link CircleProgress#textFormat}
          * @private
+         * TODO: Remove offsets in em when support for IE is dropped
          */
 
       }, {
@@ -763,6 +764,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
               this.graph.textVal = this.graph.paper.element('tspan', {
                 x: 0,
                 y: 0,
+                dy: '0.4em',
                 "class": 'circle-progress-text-value',
                 'font-size': '12',
                 fill: this.textFormat === 'valueOnCircle' ? '#fff' : '#888'
@@ -796,18 +798,18 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
               this.graph.textVal = this.graph.paper.element('tspan', {
                 "class": 'circle-progress-text-value',
                 x: 50,
-                'dy': '-0.2em'
+                dy: '-0.2em'
               }, '', this.graph.text);
               this.graph.textSeparator = this.graph.paper.element('tspan', {
                 "class": 'circle-progress-text-separator',
                 x: 50,
-                'dy': '0.1em',
+                dy: '0.1em',
                 "font-family": "Arial, sans-serif"
               }, '___', this.graph.text);
               this.graph.textMax = this.graph.paper.element('tspan', {
                 "class": 'circle-progress-text-max',
                 x: 50,
-                'dy': '1.2em'
+                dy: '1.2em'
               }, '', this.graph.text);
               break;
           }
@@ -827,47 +829,62 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
         value: function _updateGraph() {
           var _this2 = this;
 
-          var startAngle = this.startAngle - 90,
-              angle,
-              r,
-              clockwise;
+          var startAngle = this.startAngle - 90;
+
+          var r = this._getRadius();
 
           if (!this._isIndeterminate()) {
-            angle = this._valToAngle(this.value);
-            r = this._getRadius();
-            clockwise = this.clockwise;
+            var clockwise = this.clockwise;
+
+            var angle = this._valueToAngle();
+
             this.graph.circle.attr('r', r);
 
-            if (this.animation !== 'none' && angle !== this.graph.angle) {
-              animator(this.animation, this.graph.angle, angle - this.graph.angle, this.animationDuration, function (angle) {
+            if (this.animation !== 'none' && this.value !== this.graph.value) {
+              animator(this.animation, this.graph.value, this.value - this.graph.value, this.animationDuration, function (value) {
+                _this2._updateText(Math.round(value));
+
+                angle = _this2._valueToAngle(value);
+
                 _this2.graph.sector.attr('d', CircleProgress._makeSectorPath(50, 50, r, startAngle, angle, clockwise));
+
+                if (_this2.textFormat === 'valueOnCircle') {
+                  _this2._positionValueText((2 * startAngle + angle) / 2, r);
+                }
               });
             } else {
               this.graph.sector.attr('d', CircleProgress._makeSectorPath(50, 50, r, startAngle, angle, clockwise));
+
+              this._updateText(this.value);
             }
 
-            this.graph.angle = angle;
-
-            if (this.textFormat === 'valueOnCircle') {
-              this._positionValueText((2 * startAngle + angle) / 2);
-            }
+            this.graph.value = this.value;
           } else {
+            this._updateText(this.value);
+
             if (this.textFormat === 'valueOnCircle') {
-              this._positionValueText(startAngle);
+              this._positionValueText(startAngle, r);
             }
-          } // Update texts
+          }
+        }
+        /**
+         * Update texts
+         */
 
-
+      }, {
+        key: "_updateText",
+        value: function _updateText(value) {
           if (typeof this.textFormat === 'function') {
-            this.graph.text.content(this.textFormat(this.value, this.max));
+            this.graph.text.content(this.textFormat(value, this.max));
           } else if (this.textFormat === 'value') {
-            this.graph.text.el.textContent = this.value !== undefined ? this.value : this.indeterminateText;
+            this.graph.text.el.textContent = value !== undefined ? value : this.indeterminateText;
           } else if (this.textFormat === 'percent') {
-            this.graph.text.el.textContent = (this.value !== undefined && this.max != null ? Math.round(this.value / this.max * 100) : this.indeterminateText) + '%';
+            // TODO: add tests for when min is non-zero
+            this.graph.text.el.textContent = (value !== undefined && this.max != null ? Math.round(value / this.max * 100) : this.indeterminateText) + '%';
           } else if (this.textFormat === 'none') {
             this.graph.text.el.textContent = '';
           } else {
-            this.graph.textVal.el.textContent = this.value !== undefined ? this.value : this.indeterminateText;
+            this.graph.textVal.el.textContent = value !== undefined ? value : this.indeterminateText;
             this.graph.textMax.el.textContent = this.max !== undefined ? this.max : this.indeterminateText;
           }
         }
