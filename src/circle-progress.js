@@ -420,42 +420,39 @@ class CircleProgress {
 			this.graph.circle.attr('r', r);
 			if(this.animation !== 'none' && this.value !== this.graph.value) {
 				animator(this.animation, this.graph.value, this.value - this.graph.value, this.animationDuration, value => {
-					this._updateText(Math.round(value));
+					this._updateText(Math.round(value), (2 * startAngle + angle) / 2, r);
 					angle = this._valueToAngle(value);
 					this.graph.sector.attr('d', CircleProgress._makeSectorPath(50, 50, r, startAngle, angle, clockwise));
-					if(this.textFormat === 'valueOnCircle') {
-						this._positionValueText((2 * startAngle + angle) / 2, r);
-					}
 				});
 			} else {
 				this.graph.sector.attr('d', CircleProgress._makeSectorPath(50, 50, r, startAngle, angle, clockwise));
-				this._updateText(this.value);
+				this._updateText(this.value, (2 * startAngle + angle) / 2, r);
 			}
 			this.graph.value = this.value;
 		} else {
-			this._updateText(this.value);
-			if(this.textFormat === 'valueOnCircle') {
-				this._positionValueText(startAngle, r);
-			}
+			this._updateText(this.value, startAngle, r);
 		}
 	}
 
 	/**
 	 * Update texts
 	 */
-	_updateText(value) {
+	_updateText(value, angle, r) {
 		if(typeof this.textFormat === 'function') {
 			this.graph.text.content(this.textFormat(value, this.max));
 		} else if(this.textFormat === 'value') {
 			this.graph.text.el.textContent = (value !== undefined ? value : this.indeterminateText);
 		} else if(this.textFormat === 'percent') {
-			// TODO: add tests for when min is non-zero
 			this.graph.text.el.textContent = (value !== undefined && this.max != null ? Math.round(value / this.max * 100) : this.indeterminateText) + '%';
 		} else if(this.textFormat === 'none') {
 			this.graph.text.el.textContent = '';
 		} else {
 			this.graph.textVal.el.textContent = value !== undefined ? value : this.indeterminateText;
 			this.graph.textMax.el.textContent = this.max !== undefined ? this.max : this.indeterminateText;
+		}
+
+		if(this.textFormat === 'valueOnCircle') {
+			this._positionValueText(angle, r);
 		}
 	}
 
