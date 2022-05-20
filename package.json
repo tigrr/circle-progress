@@ -22,7 +22,8 @@
 	"license": "MIT",
 	"main": "dist/circle-progress.js",
 	"scripts": {
-		"build": "grunt build"
+		"build": "grunt build",
+		"watch": "grunt watch"
 	},
 	"devDependencies": {
 		"@babel/core": "^7.11.4",

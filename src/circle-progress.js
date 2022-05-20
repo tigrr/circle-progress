@@ -36,7 +36,7 @@ const util = {
  * @global
  * @class Circle Progress class
  */
-class CircleProgress {
+class CircleProgress extends HTMLElement {
 	get value() {
 		return this._attrs.value;
 	}
@@ -111,33 +111,24 @@ class CircleProgress {
 	/**
 	 * Construct the new CircleProgress instance
 	 * @constructs
-	 * @param {(HTMLElement|string)}  el    Either HTML element or a selector string
 	 * @param {Object}                opts  Options
 	 * @param {Document}              [doc] Document
 	 */
-	constructor(el, opts = {}, doc = document) {
+	constructor(opts = {}, doc = document) {
+		super();
 		let circleThickness;
 
-		if(typeof el === 'string') el = doc.querySelector(el);
-		if(!el) throw new Error('CircleProgress: you must pass the container element as the first argument');
+		this.setAttribute('role', 'progressbar');
 
-		// If element is already circleProgress, return the circleProgress object.
-		if(el.circleProgress) return el.circleProgress;
-
-		el.circleProgress = this;
-
-		this.doc = doc;
-
-		el.setAttribute('role', 'progressbar');
-
-		this.el = el;
 		opts = {...CircleProgress.defaults, ...opts};
 		Object.defineProperty(this, '_attrs', {value: {}, enumerable: false});
 
 		circleThickness = opts.textFormat === 'valueOnCircle' ? 16 : 8;
 
+		const shadowRoot = this.attachShadow({ mode: 'open' })
+
 		this.graph = {
-			paper: svgpaper(el, 100, 100),
+			paper: svgpaper(shadowRoot, 100, 100),
 			value: 0,
 		};
 		this.graph.paper.svg.setAttribute('class', 'circle-progress');
@@ -221,8 +212,8 @@ class CircleProgress {
 		this._attrs[key] = val;
 
 		if(key in ariaAttrs) {
-			if(val !== undefined) this.el.setAttribute(ariaAttrs[key], val);
-			else this.el.removeAttribute(ariaAttrs[key]);
+			if(val !== undefined) this.setAttribute(ariaAttrs[key], val);
+			else this.removeAttribute(ariaAttrs[key]);
 		}
 		if(['min', 'max', 'constrain'].indexOf(key) !== -1 && (this.value > this.max || this.value < this.min)) {
 			this.value = Math.min(this.max, Math.max(this.min, this.value));
@@ -248,11 +239,11 @@ class CircleProgress {
 			case 'value':
 			case 'min':
 			case 'max':
-				val = parseFloat(val);
+				val = Number.parseFloat(val);
 				if(!isFinite(val)) val = undefined;
 				break;
 			case 'startAngle':
-				val = parseFloat(val);
+				val = Number.parseFloat(val);
 				if(!isFinite(val)) val = undefined;
 				else val = Math.max(0, Math.min(360, val));
 				break;
@@ -464,8 +455,8 @@ class CircleProgress {
 	 */
 	_getRadius() {
 		return 50 - Math.max(
-			parseFloat(this.doc.defaultView.getComputedStyle(this.graph.circle.el, null)['stroke-width']),
-			parseFloat(this.doc.defaultView.getComputedStyle(this.graph.sector.el, null)['stroke-width']),
+			Number.parseFloat(this.ownerDocument.defaultView.getComputedStyle(this.graph.circle.el, null)['stroke-width']),
+			Number.parseFloat(this.ownerDocument.defaultView.getComputedStyle(this.graph.sector.el, null)['stroke-width']),
 		) / 2;
 	}
 }
@@ -482,6 +473,8 @@ CircleProgress.defaults = {
 	animationDuration: 600
 };
 
+
+customElements.define('circle-progress', CircleProgress);
 
 // Export circleProgress.
 return CircleProgress;

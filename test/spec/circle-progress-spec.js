@@ -4,14 +4,14 @@
 'use strict';
 
 describe('Circle Progress', function() {
-	const container = document.createElement('div');
-	container.style.marginBottom = '30px';
-	document.body.appendChild(container);
+	const cp = document.createElement('circle-progress');
+	cp.style.marginBottom = '30px';
+	document.body.appendChild(cp);
 
-	const cp = new CircleProgress(container, {
-		min: 0,
-		max: 100,
-	});
+	// const cp = new CircleProgress(container, {
+	// 	min: 0,
+	// 	max: 100,
+	// });
 
 	beforeEach(() => {
 		cp.min = -1000
@@ -132,109 +132,109 @@ describe('Circle Progress', function() {
 });
 
 
-describe('Circle Progress jQuery plugin', function() {
-	const container = document.createElement('div');
-	container.style.marginBottom = '30px';
-	document.body.appendChild(container);
-	const $cp = $(container);
+// describe('Circle Progress jQuery plugin', function() {
+// 	const container = document.createElement('div');
+// 	container.style.marginBottom = '30px';
+// 	document.body.appendChild(container);
+// 	const $cp = $(container);
 
-	$cp.circleProgress({
-		min: 0,
-		max: 100,
-	});
+// 	$cp.circleProgress({
+// 		min: 0,
+// 		max: 100,
+// 	});
 
-	it('sets value', function() {
-		$cp.circleProgress('option', 'min', 0);
-		$cp.circleProgress('option', 'max', 10);
-		$cp.circleProgress('option', 'value', 5);
-		expect($cp.circleProgress('option', 'value')).toBe(5);
-		$cp.circleProgress('option', 'value', '6');
-		expect($cp.circleProgress('option', 'value')).toBe(6);
-		$cp.circleProgress('value', '7');
-		expect($cp.circleProgress('value')).toBe(7);
-	});
+// 	it('sets value', function() {
+// 		$cp.circleProgress('option', 'min', 0);
+// 		$cp.circleProgress('option', 'max', 10);
+// 		$cp.circleProgress('option', 'value', 5);
+// 		expect($cp.circleProgress('option', 'value')).toBe(5);
+// 		$cp.circleProgress('option', 'value', '6');
+// 		expect($cp.circleProgress('option', 'value')).toBe(6);
+// 		$cp.circleProgress('value', '7');
+// 		expect($cp.circleProgress('value')).toBe(7);
+// 	});
 
-	it('sets min', function() {
-		$cp.circleProgress('option', 'min', 10);
-		$cp.circleProgress('option', 'min', 1);
-		expect($cp.circleProgress('option', 'min')).toBe(1);
-		$cp.circleProgress('option', 'min', '2');
-		expect($cp.circleProgress('option', 'min')).toBe(2);
-		$cp.circleProgress('min', '3');
-		expect($cp.circleProgress('min')).toBe(3);
-	});
+// 	it('sets min', function() {
+// 		$cp.circleProgress('option', 'min', 10);
+// 		$cp.circleProgress('option', 'min', 1);
+// 		expect($cp.circleProgress('option', 'min')).toBe(1);
+// 		$cp.circleProgress('option', 'min', '2');
+// 		expect($cp.circleProgress('option', 'min')).toBe(2);
+// 		$cp.circleProgress('min', '3');
+// 		expect($cp.circleProgress('min')).toBe(3);
+// 	});
 
-	it('sets max', function() {
-		$cp.circleProgress('option', 'min', 0);
-		$cp.circleProgress('option', 'max', 9);
-		expect($cp.circleProgress('option', 'max')).toBe(9);
-		$cp.circleProgress('option', 'max', '10');
-		expect($cp.circleProgress('option', 'max')).toBe(10);
-		$cp.circleProgress('max', '11');
-		expect($cp.circleProgress('max')).toBe(11);
-	});
+// 	it('sets max', function() {
+// 		$cp.circleProgress('option', 'min', 0);
+// 		$cp.circleProgress('option', 'max', 9);
+// 		expect($cp.circleProgress('option', 'max')).toBe(9);
+// 		$cp.circleProgress('option', 'max', '10');
+// 		expect($cp.circleProgress('option', 'max')).toBe(10);
+// 		$cp.circleProgress('max', '11');
+// 		expect($cp.circleProgress('max')).toBe(11);
+// 	});
 
-	it('does not accept min greater than max and max less than min', function() {
-		$cp.circleProgress('option', 'min', 2);
-		$cp.circleProgress('option', 'max', 10);
-		$cp.circleProgress('option', 'min', 11);
-		expect($cp.circleProgress('option', 'min')).toBe(2);
-		$cp.circleProgress('option', 'max', 1);
-		expect($cp.circleProgress('option', 'max')).toBe(10);
-	});
+// 	it('does not accept min greater than max and max less than min', function() {
+// 		$cp.circleProgress('option', 'min', 2);
+// 		$cp.circleProgress('option', 'max', 10);
+// 		$cp.circleProgress('option', 'min', 11);
+// 		expect($cp.circleProgress('option', 'min')).toBe(2);
+// 		$cp.circleProgress('option', 'max', 1);
+// 		expect($cp.circleProgress('option', 'max')).toBe(10);
+// 	});
 
-	it('sets constrain', function() {
-		$cp.circleProgress('option', 'constrain', true);
-		expect($cp.circleProgress('option', 'constrain')).toBe(true);
-		$cp.circleProgress('option', 'constrain', false);
-		expect($cp.circleProgress('option', 'constrain')).toBe(false);
-		$cp.circleProgress('option', 'constrain', 1);
-		expect($cp.circleProgress('option', 'constrain')).toBe(true);
-		$cp.circleProgress('option', 'constrain', '');
-		expect($cp.circleProgress('option', 'constrain')).toBe(false);
-	});
+// 	it('sets constrain', function() {
+// 		$cp.circleProgress('option', 'constrain', true);
+// 		expect($cp.circleProgress('option', 'constrain')).toBe(true);
+// 		$cp.circleProgress('option', 'constrain', false);
+// 		expect($cp.circleProgress('option', 'constrain')).toBe(false);
+// 		$cp.circleProgress('option', 'constrain', 1);
+// 		expect($cp.circleProgress('option', 'constrain')).toBe(true);
+// 		$cp.circleProgress('option', 'constrain', '');
+// 		expect($cp.circleProgress('option', 'constrain')).toBe(false);
+// 	});
 
-	it('can constrain value between min and max', function() {
-		$cp.circleProgress('option', 'constrain', true);
-		$cp.circleProgress('option', 'min', 2);
-		$cp.circleProgress('option', 'max', 10);
-		$cp.circleProgress('option', 'value', -2);
-		expect($cp.circleProgress('option', 'value')).toBe(2);
-		$cp.circleProgress('option', 'value', 20);
-		expect($cp.circleProgress('option', 'value')).toBe(10);
-		$cp.circleProgress('option', 'max', 8);
-		expect($cp.circleProgress('option', 'value')).toBe(8);
-		$cp.circleProgress('option', 'value', 3);
-		$cp.circleProgress('option', 'min', 4);
-		expect($cp.circleProgress('option', 'value')).toBe(4);
-	});
+// 	it('can constrain value between min and max', function() {
+// 		$cp.circleProgress('option', 'constrain', true);
+// 		$cp.circleProgress('option', 'min', 2);
+// 		$cp.circleProgress('option', 'max', 10);
+// 		$cp.circleProgress('option', 'value', -2);
+// 		expect($cp.circleProgress('option', 'value')).toBe(2);
+// 		$cp.circleProgress('option', 'value', 20);
+// 		expect($cp.circleProgress('option', 'value')).toBe(10);
+// 		$cp.circleProgress('option', 'max', 8);
+// 		expect($cp.circleProgress('option', 'value')).toBe(8);
+// 		$cp.circleProgress('option', 'value', 3);
+// 		$cp.circleProgress('option', 'min', 4);
+// 		expect($cp.circleProgress('option', 'value')).toBe(4);
+// 	});
 
-	it('can extend value outside min and max, if constrain is set to false', function() {
-		$cp.circleProgress('option', 'constrain', false);
-		$cp.circleProgress('option', 'min', 2);
-		$cp.circleProgress('option', 'max', 10);
-		$cp.circleProgress('option', 'value', -2);
-		expect($cp.circleProgress('option', 'value')).toBe(-2);
-		$cp.circleProgress('option', 'value', 20);
-		expect($cp.circleProgress('option', 'value')).toBe(20);
-	});
+// 	it('can extend value outside min and max, if constrain is set to false', function() {
+// 		$cp.circleProgress('option', 'constrain', false);
+// 		$cp.circleProgress('option', 'min', 2);
+// 		$cp.circleProgress('option', 'max', 10);
+// 		$cp.circleProgress('option', 'value', -2);
+// 		expect($cp.circleProgress('option', 'value')).toBe(-2);
+// 		$cp.circleProgress('option', 'value', 20);
+// 		expect($cp.circleProgress('option', 'value')).toBe(20);
+// 	});
 
-	it('sets start angle', function() {
-		$cp.circleProgress('option', 'startAngle', 45);
-		expect($cp.circleProgress('option', 'startAngle')).toBe(45);
-		$cp.circleProgress('option', 'startAngle', '90');
-		expect($cp.circleProgress('option', 'startAngle')).toBe(90);
-	});
+// 	it('sets start angle', function() {
+// 		$cp.circleProgress('option', 'startAngle', 45);
+// 		expect($cp.circleProgress('option', 'startAngle')).toBe(45);
+// 		$cp.circleProgress('option', 'startAngle', '90');
+// 		expect($cp.circleProgress('option', 'startAngle')).toBe(90);
+// 	});
 
-	it('should constrain start angle between 0 and 360', function() {
-		$cp.circleProgress('option', 'startAngle', -30);
-		expect($cp.circleProgress('option', 'startAngle')).toBe(0);
-		$cp.circleProgress('option', 'startAngle', 400);
-		expect($cp.circleProgress('option', 'startAngle')).toBe(360);
-	});
+// 	it('should constrain start angle between 0 and 360', function() {
+// 		$cp.circleProgress('option', 'startAngle', -30);
+// 		expect($cp.circleProgress('option', 'startAngle')).toBe(0);
+// 		$cp.circleProgress('option', 'startAngle', 400);
+// 		expect($cp.circleProgress('option', 'startAngle')).toBe(360);
+// 	});
 
-	// it('goes clockwise and anticlockwise', function() {
-	// 	cp.clockwise = true;
-	// 	expect()
-	// });
-});
+// 	// it('goes clockwise and anticlockwise', function() {
+// 	// 	cp.clockwise = true;
+// 	// 	expect()
+// 	// });
+// });

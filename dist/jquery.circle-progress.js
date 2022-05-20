@@ -12,6 +12,26 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _wrapNativeSuper(Class) { var _cache = typeof Map === "function" ? new Map() : undefined; _wrapNativeSuper = function _wrapNativeSuper(Class) { if (Class === null || !_isNativeFunction(Class)) return Class; if (typeof Class !== "function") { throw new TypeError("Super expression must either be null or a function"); } if (typeof _cache !== "undefined") { if (_cache.has(Class)) return _cache.get(Class); _cache.set(Class, Wrapper); } function Wrapper() { return _construct(Class, arguments, _getPrototypeOf(this).constructor); } Wrapper.prototype = Object.create(Class.prototype, { constructor: { value: Wrapper, enumerable: false, writable: true, configurable: true } }); return _setPrototypeOf(Wrapper, Class); }; return _wrapNativeSuper(Class); }
+
+function _construct(Parent, args, Class) { if (_isNativeReflectConstruct()) { _construct = Reflect.construct; } else { _construct = function _construct(Parent, args, Class) { var a = [null]; a.push.apply(a, args); var Constructor = Function.bind.apply(Parent, a); var instance = new Constructor(); if (Class) _setPrototypeOf(instance, Class.prototype); return instance; }; } return _construct.apply(null, arguments); }
+
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
+
+function _isNativeFunction(fn) { return Function.toString.call(fn).indexOf("[native code]") !== -1; }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 (function (factory) {
@@ -405,7 +425,11 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
      * @class Circle Progress class
      */
 
-    var CircleProgress = /*#__PURE__*/function () {
+    var CircleProgress = /*#__PURE__*/function (_HTMLElement) {
+      _inherits(CircleProgress, _HTMLElement);
+
+      var _super2 = _createSuper(CircleProgress);
+
       _createClass(CircleProgress, [{
         key: "value",
         get: function get() {
@@ -489,30 +513,22 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
         /**
          * Construct the new CircleProgress instance
          * @constructs
-         * @param {(HTMLElement|string)}  el    Either HTML element or a selector string
          * @param {Object}                opts  Options
          * @param {Document}              [doc] Document
          */
 
       }]);
 
-      function CircleProgress(el) {
-        var opts = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-        var doc = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : document;
+      function CircleProgress() {
+        var _this;
+
+        var opts = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+        var doc = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : document;
 
         _classCallCheck(this, CircleProgress);
 
-        var circleThickness;
-        if (typeof el === 'string') el = doc.querySelector(el);
-        if (!el) throw new Error('CircleProgress: you must pass the container element as the first argument'); // If element is already circleProgress, return the circleProgress object.
-
-        if (el.circleProgress) return el.circleProgress;
-        el.circleProgress = this;
-        this.doc = doc;
-        el.setAttribute('role', 'progressbar');
-        this.el = el;
-        opts = _objectSpread(_objectSpread({}, CircleProgress.defaults), opts);
-        Object.defineProperty(this, '_attrs', {
+        _this = _super2.call(this);
+        Object.defineProperty(_assertThisInitialized(_this), '_attrs', {
           value: {},
           enumerable: false
         });
@@ -555,17 +571,66 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
           return [key, opts[key]];
         }));
       }
-      /**
-       * Set attributes
-       * @param  {(Array|Object)} attrs Attributes as an array [[key,value],...] or map {key: value,...}
-       * @return {CircleProgress}       The CircleProgress instance
-       */
-
 
       _createClass(CircleProgress, [{
+        key: "connectedCallback",
+        value: function connectedCallback() {
+          var circleThickness;
+
+          var opts = _objectSpread({}, CircleProgress.defaults);
+
+          circleThickness = opts.textFormat === 'valueOnCircle' ? 16 : 8;
+          var shadowRoot = this.attachShadow({
+            mode: 'open'
+          });
+          this.graph = {
+            paper: svgpaper(shadowRoot, 100, 100),
+            angle: 0
+          };
+          this.graph.paper.svg.setAttribute('class', 'circle-progress');
+          this.graph.circle = this.graph.paper.element('circle').attr({
+            "class": 'circle-progress-circle',
+            cx: 50,
+            cy: 50,
+            r: 50 - circleThickness / 2,
+            fill: 'none',
+            stroke: '#ddd',
+            'stroke-width': circleThickness
+          });
+          this.graph.sector = this.graph.paper.element('path').attr({
+            d: CircleProgress._makeSectorPath(50, 50, 50 - circleThickness / 2, 0, 0),
+            "class": 'circle-progress-value',
+            fill: 'none',
+            stroke: '#00E699',
+            'stroke-width': circleThickness
+          });
+          this.graph.text = this.graph.paper.element('text', {
+            "class": 'circle-progress-text',
+            x: 50,
+            y: 50,
+            'font': '16px Arial, sans-serif',
+            'text-anchor': 'middle',
+            fill: '#999'
+          });
+
+          this._initText();
+
+          this.attr(['indeterminateText', 'textFormat', 'startAngle', 'clockwise', 'animation', 'animationDuration', 'constrain', 'min', 'max', 'value'].filter(function (key) {
+            return key in opts;
+          }).map(function (key) {
+            return [key, opts[key]];
+          }));
+        }
+        /**
+         * Set attributes
+         * @param  {(Array|Object)} attrs Attributes as an array [[key,value],...] or map {key: value,...}
+         * @return {CircleProgress}       The CircleProgress instance
+         */
+
+      }, {
         key: "attr",
         value: function attr(attrs) {
-          var _this = this;
+          var _this2 = this;
 
           if (typeof attrs === 'string') {
             if (arguments.length === 1) return this._attrs[attrs];
@@ -586,7 +651,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
           }
 
           attrs.forEach(function (attr) {
-            return _this._set(attr[0], attr[1]);
+            return _this2._set(attr[0], attr[1]);
           });
 
           this._updateGraph();
@@ -604,9 +669,9 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
         key: "_set",
         value: function _set(key, val) {
           var ariaAttrs = {
-            value: 'aria-valuenow',
-            min: 'aria-valuemin',
-            max: 'aria-valuemax'
+            value: 'ariaValueNow',
+            min: 'ariaValueMin',
+            max: 'ariaValueMax'
           },
               circleThickness;
           val = this._formatValue(key, val);
@@ -623,7 +688,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
           this._attrs[key] = val;
 
           if (key in ariaAttrs) {
-            if (val !== undefined) this.el.setAttribute(ariaAttrs[key], val);else this.el.removeAttribute(ariaAttrs[key]);
+            if (val !== undefined) this._internals[ariaAttrs[key]] = val;else this._internals[ariaAttrs[key]] = null;
           }
 
           if (['min', 'max', 'constrain'].indexOf(key) !== -1 && (this.value > this.max || this.value < this.min)) {
@@ -653,12 +718,12 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
             case 'value':
             case 'min':
             case 'max':
-              val = parseFloat(val);
+              val = Number.parseFloat(val);
               if (!isFinite(val)) val = undefined;
               break;
 
             case 'startAngle':
-              val = parseFloat(val);
+              val = Number.parseFloat(val);
               if (!isFinite(val)) val = undefined;else val = Math.max(0, Math.min(360, val));
               break;
 
@@ -827,7 +892,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
       }, {
         key: "_updateGraph",
         value: function _updateGraph() {
-          var _this2 = this;
+          var _this3 = this;
 
           var startAngle = this.startAngle - 90;
 
@@ -892,7 +957,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
       }, {
         key: "_getRadius",
         value: function _getRadius() {
-          return 50 - Math.max(parseFloat(this.doc.defaultView.getComputedStyle(this.graph.circle.el, null)['stroke-width']), parseFloat(this.doc.defaultView.getComputedStyle(this.graph.sector.el, null)['stroke-width'])) / 2;
+          return 50 - Math.max(Number.parseFloat(this.ownerDocument.defaultView.getComputedStyle(this.graph.circle.el, null)['stroke-width']), Number.parseFloat(this.ownerDocument.defaultView.getComputedStyle(this.graph.sector.el, null)['stroke-width'])) / 2;
         }
       }], [{
         key: "_makeSectorPath",
@@ -919,7 +984,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
       }]);
 
       return CircleProgress;
-    }();
+    }( /*#__PURE__*/_wrapNativeSuper(HTMLElement));
 
     CircleProgress.defaults = {
       startAngle: 0,
@@ -931,7 +996,8 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
       textFormat: 'horizontal',
       animation: 'easeInOutCubic',
       animationDuration: 600
-    }; // Export circleProgress.
+    };
+    customElements.define('circle-progress', CircleProgress); // Export circleProgress.
 
     return CircleProgress;
   }();
