@@ -1,13 +1,3 @@
-'use strict';
-
-var svgpaper = (function() {
-
-var paper,
-	paperproto,
-	element,
-	elementproto;
-
-
 /**
  * Create new paper holding a new SVG element
  * @param  {(HTMLElement|string)} container      Container element or selector string
@@ -16,18 +6,16 @@ var paper,
  * @param  {Document}             [doc=document] HTML document. Defaults to current document
  * @return {Object}                              The paper
  */
-paper = function(container, width, height, doc) {
-	var svg, me;
-
+const paper = function(container, width, height, doc) {
 	doc = doc || document;
 
-	me = Object.create(paperproto);
+	const me = Object.create(paperProto);
 
 	if(typeof container === 'string') container = doc.querySelector(container);
 
 	if(!container) return;
 
-	svg = doc.createElementNS('http://www.w3.org/2000/svg', 'svg');
+	const svg = doc.createElementNS('http://www.w3.org/2000/svg', 'svg');
 	svg.setAttribute('version', '1.1');
 	if(width) svg.setAttribute('width', width);
 	if(height) svg.setAttribute('height', height);
@@ -38,7 +26,7 @@ paper = function(container, width, height, doc) {
 	return me;
 };
 
-paperproto = {
+const paperProto = {
 	/**
 	 * Create a new SVG element
 	 * @param  {string}     name      Element name
@@ -48,9 +36,7 @@ paperproto = {
 	 * @return {object}               Element
 	 */
 	element: function(name, attrs, content, parent) {
-		var el;
-
-		el = element(this, name, attrs, parent);
+		const el = element(this, name, attrs, parent);
 		if(content) el.el.innerHTML = content;
 
 		return el;
@@ -66,12 +52,10 @@ paperproto = {
  * @param  {Document}   [doc]    Document
  * @return {Object}              Element
  */
-element = function(paper, name, attrs, parent, doc) {
-	var attrNames, me;
-
+const element = function(paper, name, attrs, parent, doc) {
 	doc = doc || document;
 
-	me = Object.create(elementproto);
+	const me = Object.create(elementProto);
 
 	me.el = doc.createElementNS('http://www.w3.org/2000/svg', name);
 	me.attr(attrs);
@@ -81,7 +65,7 @@ element = function(paper, name, attrs, parent, doc) {
 	return me;
 };
 
-elementproto = {
+const elementProto = {
 	/**
 	 * Set an attribute to a value
 	 * @param  {string} name  Attribute name
@@ -95,7 +79,7 @@ elementproto = {
 	attr: function(name, value) {
 		if(name === undefined) return this;
 		if(typeof name === 'object') {
-			for(var key in name) {
+			for(let key in name) {
 				this.attr(key, name[key]);
 			}
 			return this;
@@ -116,8 +100,4 @@ elementproto = {
 	}
 };
 
-
-// Export paper.
-return paper;
-
-}());
+export default paper

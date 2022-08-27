@@ -1,6 +1,3 @@
-'use strict';
-
-
 /**
  * Change any value using an animation easing function.
  * @param  {string}   Easing function.
@@ -10,7 +7,7 @@
  * @param  {Function} Callback to be called on each iteration. The callback is passed one argument: current value.
  */
 const animator = function(easing, startValue, valueChange, dur, cb) {
-	const easeFunc = typeof easing === 'string' ? animator.easings[easing] : easing;
+	const easeFunc = typeof easing === 'string' ? easings[easing] : easing;
 	let tStart;
 
 	const frame = function(t) {
@@ -26,13 +23,15 @@ const animator = function(easing, startValue, valueChange, dur, cb) {
 	requestAnimationFrame(frame);
 };
 
+export default animator;
+
 
 /**
  * Map of easings' strings to functions
  * Easing functions from http://gizma.com/easing/
  * @type {Object}
  */
-animator.easings = {
+export const easings = {
 	linear:  function (t, b, c, d) {
 		return c*t/d + b;
 	},

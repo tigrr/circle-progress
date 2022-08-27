@@ -1,34 +1,12 @@
 /**
- * @author Tigran Sargsyan [tigran.sn@gmail.com]
+ * @author Tigran Sargsyan <tigran.sn@gmail.com>
  */
 
-/* globals svgpaper, animator */
-
-'use strict';
-
-const CircleProgress = (function() {
-/**
- * Utility functions
- * @type {Object}
- */
-const util = {
-	/**
-	 * Mathematical functions
-	 * @type {Object}
-	 */
-	math: {
-		/**
-		 * Convert polar coordinates (radius, angle) to cartesian ones (x, y)
-		 * @param  {float} r      Radius
-		 * @param  {float} angle  Angle
-		 * @return {object}       Cartesian coordinates as object: {x, y}
-		 */
-		polarToCartesian: (r, angle) => ({
-			x: r * Math.cos(angle * Math.PI / 180),
-			y: r * Math.sin(angle * Math.PI / 180),
-		})
-	}
-};
+import svgpaper from './svgpaper.js';
+import animator, {
+	easings,
+} from './animator.js';
+import util from './util.js';
 
 
 /**
@@ -262,7 +240,7 @@ class CircleProgress extends HTMLElement {
 				if(typeof val !== 'string' && typeof val !== 'function') {
 					throw new TypeError(`Failed to set "animation" property on CircleProgress: the value must be either string or function, ${typeof val} passed.`);
 				}
-				if(typeof val === 'string' && val !== 'none' && !animator.easings[val]) {
+				if(typeof val === 'string' && val !== 'none' && !easings[val]) {
 					throw new Error(`Failed to set "animation" on CircleProgress: the provided value ${val} is not a legal easing function name.`);
 				}
 				break;
@@ -475,7 +453,4 @@ CircleProgress.defaults = {
 
 customElements.define('circle-progress', CircleProgress);
 
-// Export circleProgress.
-return CircleProgress;
-
-}());
+export default CircleProgress;
