@@ -122,7 +122,7 @@ module.exports = function (grunt) {
 					banner: umdCode.vanilla.opening,
 					footer: umdCode.vanilla.closing,
 				},
-				src: ['src/innersvg.js', 'src/svgpaper.js', 'src/animator.js', 'src/circle-progress.js'],
+				src: ['src/svgpaper.js', 'src/animator.js', 'src/circle-progress.js'],
 				dest: 'dist/circle-progress.js',
 			},
 			jquery: {
@@ -130,7 +130,7 @@ module.exports = function (grunt) {
 					banner: umdCode.jQuery.opening,
 					footer: umdCode.jQuery.closing,
 				},
-				src: ['src/innersvg.js', 'src/svgpaper.js', 'src/animator.js', 'src/circle-progress.js', 'lib/jquery.ui.widget.js', 'src/jquery.circle-progress.js'],
+				src: ['src/svgpaper.js', 'src/animator.js', 'src/circle-progress.js', 'lib/jquery.ui.widget.js', 'src/jquery.circle-progress.js'],
 				dest: 'dist/jquery.circle-progress.js',
 			},
 			jqueryBare: {
@@ -138,7 +138,7 @@ module.exports = function (grunt) {
 					banner: umdCode.jQuery.opening,
 					footer: umdCode.jQuery.closing,
 				},
-				src: ['src/innersvg.js', 'src/svgpaper.js', 'src/animator.js', 'src/circle-progress.js', 'src/jquery.circle-progress.js'],
+				src: ['src/svgpaper.js', 'src/animator.js', 'src/circle-progress.js', 'src/jquery.circle-progress.js'],
 				dest: 'dist/jquery.circle-progress.bare.js',
 			}
 		},

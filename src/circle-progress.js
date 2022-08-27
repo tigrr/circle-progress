@@ -118,8 +118,6 @@ class CircleProgress extends HTMLElement {
 		super();
 		let circleThickness;
 
-		this.setAttribute('role', 'progressbar');
-
 		opts = {...CircleProgress.defaults, ...opts};
 		Object.defineProperty(this, '_attrs', {value: {}, enumerable: false});
 
@@ -132,6 +130,7 @@ class CircleProgress extends HTMLElement {
 			value: 0,
 		};
 		this.graph.paper.svg.setAttribute('class', 'circle-progress');
+		this.graph.paper.svg.setAttribute('role', 'progressbar');
 		this.graph.circle = this.graph.paper.element('circle').attr({
 			class: 'circle-progress-circle',
 			cx: 50,
@@ -212,8 +211,8 @@ class CircleProgress extends HTMLElement {
 		this._attrs[key] = val;
 
 		if(key in ariaAttrs) {
-			if(val !== undefined) this.setAttribute(ariaAttrs[key], val);
-			else this.removeAttribute(ariaAttrs[key]);
+			if(val !== undefined) this.graph.paper.svg.setAttribute(ariaAttrs[key], val);
+			else this.graph.paper.svg.removeAttribute(ariaAttrs[key]);
 		}
 		if(['min', 'max', 'constrain'].indexOf(key) !== -1 && (this.value > this.max || this.value < this.min)) {
 			this.value = Math.min(this.max, Math.max(this.min, this.value));
