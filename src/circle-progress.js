@@ -7,6 +7,7 @@ import animator, {
 	easings,
 } from './animator.js';
 import util from './util.js';
+import styles from './styles.js';
 
 
 /**
@@ -43,18 +44,18 @@ class CircleProgress extends HTMLElement {
 		this.attr('startAngle', val);
 	}
 
-	get clockwise() {
-		return this._attrs.clockwise;
+	get anticlockwise() {
+		return this._attrs.anticlockwise;
 	}
-	set clockwise(val) {
-		this.attr('clockwise', val);
+	set anticlockwise(val) {
+		this.attr('anticlockwise', val);
 	}
 
-	get constrain() {
-		return this._attrs.constrain;
+	get unconstrained() {
+		return this._attrs.unconstrained;
 	}
-	set constrain(val) {
-		this.attr('constrain', val);
+	set unconstrained(val) {
+		this.attr('unconstrained', val);
 	}
 
 	get indeterminateText() {
@@ -101,16 +102,21 @@ class CircleProgress extends HTMLElement {
 
 		circleThickness = opts.textFormat === 'valueOnCircle' ? 16 : 8;
 
-		const shadowRoot = this.attachShadow({ mode: 'open' })
+		const shadowRoot = this.attachShadow({ mode: 'open' });
+		const style = document.createElement('style');
+		style.textContent = styles;
+		shadowRoot.append(style);
 
 		this.graph = {
 			paper: svgpaper(shadowRoot, 100, 100),
 			value: 0,
 		};
 		this.graph.paper.svg.setAttribute('class', 'circle-progress');
+		this.graph.paper.svg.setAttribute('part', 'svg');
 		this.graph.paper.svg.setAttribute('role', 'progressbar');
 		this.graph.circle = this.graph.paper.element('circle').attr({
 			class: 'circle-progress-circle',
+			part: 'circle',
 			cx: 50,
 			cy: 50,
 			r: 50 - circleThickness / 2,
@@ -121,12 +127,14 @@ class CircleProgress extends HTMLElement {
 		this.graph.sector = this.graph.paper.element('path').attr({
 			d: CircleProgress._makeSectorPath(50, 50, 50 - circleThickness / 2, 0, 0),
 			class: 'circle-progress-value',
+			part: 'value',
 			fill: 'none',
 			stroke: '#00E699',
 			'stroke-width': circleThickness,
 		});
 		this.graph.text = this.graph.paper.element('text', {
 			class: 'circle-progress-text',
+			part: 'text',
 			x: 50,
 			y: 50,
 			'font': '16px Arial, sans-serif',
@@ -134,11 +142,93 @@ class CircleProgress extends HTMLElement {
 			fill: '#999',
 		});
 		this._initText();
-		this.attr(
-			['indeterminateText', 'textFormat', 'startAngle', 'clockwise', 'animation', 'animationDuration', 'constrain', 'min', 'max', 'value']
-				.filter(key => key in opts)
-				.map(key => [key, opts[key]])
-		);
+		['indeterminateText', 'textFormat', 'startAngle', 'anticlockwise', 'animation', 'animationDuration', 'unconstrained', 'min', 'max', 'value']
+			.filter(key => key in opts)
+			.forEach(key => this._set(key, opts[key]));
+		this._updateGraph()
+	}
+
+	static get observedAttributes() {
+		return [
+			'value',
+			'min',
+			'max',
+			'start-angle',
+			'anticlockwise',
+			'unconstrained',
+			'indeterminate-text',
+			'text-format',
+			'animation',
+			'animation-duration',
+		]
+	}
+
+	static propAttrDict = {
+		startAngle: 'start-angle',
+		indeterminateText: 'indeterminate-text',
+		textFormat: 'text-format',
+		animationDuration: 'animation-duration',
+	}
+
+	/**
+	 * Convert attribute name to property name
+	 * @param {string} name Attribute name
+	 * @return {string} Property name
+	 */
+	static attrToProp(name) {
+		const pair = Object.entries(CircleProgress.propAttrDict).find(
+			([_, attr]) => attr === name
+		)
+		return pair ? pair[0] : name
+	}
+
+	/**
+	 * Convert attribute value to property value
+	 * @param {string} name Attribute name
+	 * @param {(string|null)} value Attribute value
+	 * @return Property value
+	 */
+	static attrValToProp(name, value) {
+		if (['anticlockwise', 'unconstrained'].includes(name)) {
+			return value !== null
+		}
+		return value
+	}
+
+	/**
+	 * Convert property name to attribute name
+	 * @param {string} name Property name
+	 * @return {string} Attribute name
+	 */
+	static propToAttr(name) {
+		return CircleProgress.propAttrDict[name] ?? name
+	}
+
+	_bailOutAttrUpdate = false
+
+	attributeChangedCallback(name, _, newValue) {
+		if (this._bailOutAttrUpdate) {
+			this._bailOutAttrUpdate = false
+			return
+		}
+		this._set(CircleProgress.attrToProp(name), CircleProgress.attrValToProp(name, newValue))
+		this._updateGraph()
+	}
+
+	reflectPropToAttribute(prop, value) {
+		this._bailOutAttrUpdate = true
+		const attr = CircleProgress.propToAttr(prop)
+		if (['anticlockwise', 'unconstrained'].includes(prop)) {
+			if (value) {
+				this.setAttribute(attr, '')
+			} else {
+				this.removeAttribute(attr)
+			}
+		} else if (typeof value === 'function') {
+			this.removeAttribute(attr)
+		} else {
+			this.setAttribute(attr, String(value))
+		}
 	}
 
 
@@ -151,6 +241,7 @@ class CircleProgress extends HTMLElement {
 		if(typeof attrs === 'string') {
 			if(arguments.length === 1) return this._attrs[attrs];
 			this._set(arguments[0], arguments[1]);
+			this.reflectPropToAttribute(arguments[0], arguments[1])
 			this._updateGraph();
 			return this;
 		} else if(typeof attrs !== 'object') {
@@ -159,7 +250,10 @@ class CircleProgress extends HTMLElement {
 		if(!Array.isArray(attrs)) {
 			attrs = Object.keys(attrs).map(key => [key, attrs[key]]);
 		}
-		attrs.forEach(attr => this._set(attr[0], attr[1]));
+		attrs.forEach(attr => {
+			this._set(attr[0], attr[1])
+			this.reflectPropToAttribute(attr[0], attr[1])
+		});
 		this._updateGraph();
 		return this;
 	}
@@ -181,7 +275,7 @@ class CircleProgress extends HTMLElement {
 		if(this._attrs[key] === val) return;
 		if(key === 'min' && val >= this.max) return;
 		if(key === 'max' && val <= this.min) return;
-		if(key === 'value' && val !== undefined && this.constrain) {
+		if(key === 'value' && val !== undefined && !this.unconstrained) {
 			if(this.min != null && val < this.min) val = this.min;
 			if(this.max != null && val > this.max) val = this.max;
 		}
@@ -192,7 +286,7 @@ class CircleProgress extends HTMLElement {
 			if(val !== undefined) this.graph.paper.svg.setAttribute(ariaAttrs[key], val);
 			else this.graph.paper.svg.removeAttribute(ariaAttrs[key]);
 		}
-		if(['min', 'max', 'constrain'].indexOf(key) !== -1 && (this.value > this.max || this.value < this.min)) {
+		if(['min', 'max', 'unconstrained'].indexOf(key) !== -1 && (this.value > this.max || this.value < this.min)) {
 			this.value = Math.min(this.max, Math.max(this.min, this.value));
 		}
 		if(key === 'textFormat') {
@@ -224,8 +318,8 @@ class CircleProgress extends HTMLElement {
 				if(!isFinite(val)) val = undefined;
 				else val = Math.max(0, Math.min(360, val));
 				break;
-			case 'clockwise':
-			case 'constrain':
+			case 'anticlockwise':
+			case 'unconstrained':
 				val = !!val;
 				break;
 			case 'indeterminateText':
@@ -338,6 +432,7 @@ class CircleProgress extends HTMLElement {
 				y: 0,
 				dy: '0.4em',
 				class: 'circle-progress-text-value',
+				part: 'text-value',
 				'font-size': '12',
 				fill: this.textFormat === 'valueOnCircle' ? '#fff' : '#888',
 			}, '', this.graph.text);
@@ -345,6 +440,7 @@ class CircleProgress extends HTMLElement {
 				x: 50,
 				y: 50,
 				class: 'circle-progress-text-max',
+				part: 'text-max',
 				'font-size': '22',
 				'font-weight':'bold',
 				fill: '#ddd',
@@ -354,16 +450,16 @@ class CircleProgress extends HTMLElement {
 			break;
 
 		case 'horizontal':
-			this.graph.textVal = this.graph.paper.element('tspan', {class: 'circle-progress-text-value'}, '', this.graph.text);
-			this.graph.textSeparator = this.graph.paper.element('tspan', {class: 'circle-progress-text-separator'}, '/', this.graph.text);
-			this.graph.textMax = this.graph.paper.element('tspan', {class: 'circle-progress-text-max'}, '', this.graph.text);
+			this.graph.textVal = this.graph.paper.element('tspan', {class: 'circle-progress-text-value', part: 'text-value'}, '', this.graph.text);
+			this.graph.textSeparator = this.graph.paper.element('tspan', {class: 'circle-progress-text-separator', part: 'text-separator'}, '/', this.graph.text);
+			this.graph.textMax = this.graph.paper.element('tspan', {class: 'circle-progress-text-max', part: 'text-max'}, '', this.graph.text);
 			break;
 
 		case 'vertical':
 			if(this.graph.text.el.hasAttribute('dominant-baseline')) this.graph.text.attr('dominant-baseline', 'text-after-edge');
-			this.graph.textVal = this.graph.paper.element('tspan', {class: 'circle-progress-text-value', x: 50, dy: '-0.2em'}, '', this.graph.text);
-			this.graph.textSeparator = this.graph.paper.element('tspan', {class: 'circle-progress-text-separator', x: 50, dy: '0.1em', "font-family": "Arial, sans-serif"}, '___', this.graph.text);
-			this.graph.textMax = this.graph.paper.element('tspan', {class: 'circle-progress-text-max', x: 50, dy: '1.2em'}, '', this.graph.text);
+			this.graph.textVal = this.graph.paper.element('tspan', {class: 'circle-progress-text-value', part: 'text-value', x: 50, dy: '-0.2em'}, '', this.graph.text);
+			this.graph.textSeparator = this.graph.paper.element('tspan', {class: 'circle-progress-text-separator', part: 'text-separator', x: 50, dy: '0.1em', "font-family": "Arial, sans-serif"}, '___', this.graph.text);
+			this.graph.textMax = this.graph.paper.element('tspan', {class: 'circle-progress-text-max', part: 'text-max', x: 50, dy: '1.2em'}, '', this.graph.text);
 			break;
 		}
 		if(this.textFormat !== 'vertical') {
@@ -372,6 +468,8 @@ class CircleProgress extends HTMLElement {
 			else this.graph.text.attr('dy', '0.4em');
 		}
 	}
+
+	_animator = null
 
 
 	/**
@@ -382,12 +480,13 @@ class CircleProgress extends HTMLElement {
 		const startAngle = this.startAngle - 90;
 		const r = this._getRadius();
 
+		this._animator?.cancel()
 		if(!this._isIndeterminate()) {
-			const clockwise = this.clockwise;
+			const clockwise = !this.anticlockwise;
 			let angle = this._valueToAngle();
 			this.graph.circle.attr('r', r);
 			if(this.animation !== 'none' && this.value !== this.graph.value) {
-				animator(this.animation, this.graph.value, this.value - this.graph.value, this.animationDuration, value => {
+				this._animator = animator(this.animation, this.graph.value, this.value - this.graph.value, this.animationDuration, value => {
 					this._updateText(Math.round(value), (2 * startAngle + angle) / 2, r);
 					angle = this._valueToAngle(value);
 					this.graph.sector.attr('d', CircleProgress._makeSectorPath(50, 50, r, startAngle, angle, clockwise));
@@ -442,9 +541,9 @@ CircleProgress.defaults = {
 	startAngle: 0,
 	min: 0,
 	max: 1,
-	constrain: true,
+	unconstrained: false,
 	indeterminateText: '?',
-	clockwise: true,
+	anticlockwise: false,
 	textFormat: 'horizontal',
 	animation: 'easeInOutCubic',
 	animationDuration: 600

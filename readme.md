@@ -142,9 +142,9 @@ $('.progress').circleProgress({
 | value      | Number  | Indeterminate | Current value |
 | min        | Number  | 0       | Minimum value |
 | max        | Number  | 1       | Maximum value |
-| startAngle | Number  | 0       | Starting angle in degrees. Angle of 0 points straight up. Direction depends on `clockwise`. |
-| clockwise  | Boolean | true    | Whether to rotate clockwise (true) or anti-clockwise (false) |
-| constrain  | Boolean | true    | Whether the value should be constrained between `min` and `max`. If true, values over `max` will be truncated to `max` and values under `min` will be set to `min`. |
+| startAngle | Number  | 0       | Starting angle in degrees. Angle of 0 points straight up. Direction depends on `anticlockwise`. |
+| anticlockwise  | Boolean | false    | Whether to rotate anti-clockwise (true) or clockwise (false) |
+| unconstrained  | Boolean | false    | Whether the value should be constrained between `min` and `max`. If false, values over `max` will be truncated to `max` and values under `min` will be set to `min`. |
 | indeterminateText | String | '?' | Text to display as the value when it is indeterminate |
 | textFormat | String or Function | 'horizontal' | Text layout for value, min, max. <br> You can pass either one of the possible keywords: <br> `horizontal` - <samp>value/max</samp> <br> `vertical` - value is shown over max <br> `percent` - <samp>value%</samp> <br> `value` - only value is shown <br> `valueOnCircle` - the value is painted on top of the filled region on the circle <br> `none` - no text is shown. <br>Alternatively you can provide your own function, which will be called each time progress is updated with value and max as arguments and is expected to return a string to insert in the center of the progress circle |
 | animation  | String or Function | 'easeInOutCubic' | Animation easing function. Can be a string keyword (see the table below for available easings) or `'none'`.<br>Alternatively, you can pass your own function with the signature <br>`function(time, startAngle, angleDiff, duration)`.<br> The function will be called on each animation frame with the current time (milliseconds since animation start), starting angle, difference in angle (i.e. endAngle - startAngle) and animation duration as arguments, and must return the current angle. |

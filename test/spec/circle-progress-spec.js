@@ -68,14 +68,14 @@ describe('Circle Progress', function() {
 	});
 
 	it('sets constrain', function() {
-		cp.constrain = true;
-		expect(cp.constrain).toBe(true);
-		cp.constrain = false;
-		expect(cp.constrain).toBe(false);
+		cp.unconstrained = true;
+		expect(cp.unconstrained).toBe(true);
+		cp.unconstrained = false;
+		expect(cp.unconstrained).toBe(false);
 	});
 
 	it('can constrain value between min and max', function() {
-		cp.constrain = true;
+		cp.unconstrained = false;
 		cp.min = 2;
 		cp.max = 10;
 		cp.value = -2;
@@ -89,8 +89,8 @@ describe('Circle Progress', function() {
 		expect(cp.value).toBe(4);
 	});
 
-	it('can extend value outside min and max, if constrain is set to false', function() {
-		cp.constrain = false;
+	it('can extend value outside min and max, if unconstrained is set to true', function() {
+		cp.unconstrained = true;
 		cp.min = 2;
 		cp.max = 10;
 		cp.value = -2;

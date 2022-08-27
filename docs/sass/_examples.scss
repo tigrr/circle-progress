@@ -123,105 +123,105 @@ body.show-variant-jquery {
 
 
 .progress-1 {
-	.circle-progress-value {
+	&::part(value) {
 		stroke-width: 6px;
 		stroke: hsl(39, 100%, 50%);
 	}
-	.circle-progress-circle {
+	&::part(circle) {
 		stroke-width: 6px;
 		stroke: hsl(39, 100%, 85%);
 	}
-	.circle-progress-text {
+	&::part(text) {
 		fill: hsl(39, 100%, 50%);
 	}
 }
 
 .progress-2 {
-	.circle-progress-value {
+	&::part(value) {
 		stroke-width: 6px;
 		stroke: hsl(320, 80%, 60%);
 		stroke-dasharray: 4 1;
 	}
-	.circle-progress-circle {
+	&::part(circle) {
 		stroke-width: 6px;
 		stroke: #eee;
 	}
-	.circle-progress-text {
+	&::part(text) {
 		font-weight: bold;
 		fill: hsl(180, 80%, 47%);
 	}
 }
 
 .progress-3 {
-	.circle-progress-value {
+	&::part(value) {
 		stroke-width: 6px;
 		stroke: hsl(280, 90%, 50%);
 		stroke-linecap: round;
 	}
-	.circle-progress-circle {
+	&::part(circle) {
 		stroke-width: 2px;
 	}
 }
 
 .progress-4 {
-	.circle-progress-value {
+	&::part(value) {
 		stroke-width: 50px;
 		stroke: hsl(160, 63%, 55%);
 	}
-	.circle-progress-circle {
+	&::part(circle) {
 		stroke-width: 50px;
 		stroke: #999;
 	}
-	.circle-progress-text {
+	&::part(text) {
 		fill: white;
 	}
 }
 
 .progress-5 {
-	.circle-progress-value {
+	&::part(value) {
 		stroke-width: 6px;
 		stroke: white;
 		stroke-linecap: round;
 	}
-	.circle-progress-circle {
+	&::part(circle) {
 		stroke-width: 8px;
 		stroke: #888;
 	}
-	.circle-progress-text {
+	&::part(text) {
 		fill: #888;
 	}
 }
 
 .progress-6 {
-	.circle-progress-value {
+	&::part(value) {
 		stroke-width: 50px;
 		stroke: hsl(100, 90%, 70%);
 	}
-	.circle-progress-circle {
+	&::part(circle) {
 		stroke-width: 40px;
 		stroke: hsl(100, 15%, 60%);
 		fill: hsl(100, 15%, 60%);
 	}
-	.circle-progress-text {
+	&::part(text) {
 		fill: white;
 		font-weight: bold;
 	}
 }
 
 .progress-7 {
-	.circle-progress-value {
+	&::part(value) {
 		stroke-width: 11px;
 		stroke: aqua;
 		stroke-dasharray: 0 23.3;
 		stroke-linecap: round;
 	}
-	&[aria-valuenow="0"] .circle-progress-value {
+	&[value="0"]::part(value) {
 		display: none;
 	}
-	.circle-progress-circle {
+	&::part(circle) {
 		stroke: transparent;
 	}
-	.circle-progress-text {
+	&::part(text) {
 		font-family: "Varela Round", "Gotham rounded", sans-serif;
 		font-size: 13px;
 		font-weight: bold;
@@ -230,16 +230,16 @@ body.show-variant-jquery {
 }
 
 .progress-9 {
-	.circle-progress-value {
+	&::part(value) {
 		stroke-width: 12px;
 		stroke: hsl(210, 100%, 45%);
 	}
-	.circle-progress-circle {
+	&::part(circle) {
 		stroke: white;
 		stroke-width: 22px;
 		fill: #666;
 	}
-	.circle-progress-text {
+	&::part(text) {
 		font-family: "Georgia", serif;
 		font-size: 13px;
 		fill: white;
@@ -247,33 +247,33 @@ body.show-variant-jquery {
 }
 
 .progress-10 {
-	.circle-progress-value {
+	&::part(value) {
 		stroke-width: 2px;
 		stroke: aquamarine;
 	}
-	.circle-progress-circle {
+	&::part(circle) {
 		stroke: #ddd;
 		stroke-width: 2px;
 	}
-	.circle-progress-text {
+	&::part(text) {
 		font-family: "Georgia", serif;
 		font-size: 13px;
 	}
 }
 
 .progress-11 {
-	.circle-progress-value {
+	&::part(value) {
 		stroke-width: 6px;
 		stroke: hsl(100, 100%, 60%);
 		stroke-dasharray: 0.6 3;
 	}
-	.circle-progress-circle {
+	&::part(circle) {
 		stroke-width: 6px;
 		stroke: #ddd;
 		stroke-dasharray: 0.6 3;
 		stroke-dashoffset: 1.6;
 	}
-	.circle-progress-text {
+	&::part(text) {
 		font-family: "Dosis", "Varela Round", "Gotham Rounded Light", sans-serif;
 		fill: hsl(100, 81%, 55%);
 		font-size: 26px;
@@ -281,16 +281,16 @@ body.show-variant-jquery {
 }
 
 .progress-12 {
-	.circle-progress-value {
+	&::part(value) {
 		stroke-width: 12px;
 		stroke: darkmagenta;
 	}
-	.circle-progress-circle {
+	&::part(circle) {
 		stroke: white;
 		stroke-width: 11px;
 		fill: #666;
 	}
-	.circle-progress-text {
+	&::part(text) {
 		font-family: "Georgia", serif;
 		font-size: 13px;
 		fill: white;
@@ -298,17 +298,17 @@ body.show-variant-jquery {
 }
 
 .progress-13 {
-	.circle-progress-value {
+	&::part(value) {
 		stroke-width: 25px;
 		stroke: hsl(210, 100%, 45%);
 		stroke-dasharray: 58 1;
 	}
-	.circle-progress-circle {
+	&::part(circle) {
 		stroke: hsl(210, 100%, 85%);
 		stroke-width: 25px;
 		fill: hsl(210, 100%, 85%);
 	}
-	.circle-progress-text {
+	&::part(text) {
 		font-family: "Montserrat", "Gotham", sans-serif;
 		font-size: 16px;
 		fill: hsl(210, 100%, 45%);

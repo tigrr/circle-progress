@@ -34,7 +34,7 @@ var options = [
 	{max: 100, value: 80, textFormat: 'percent'},
 	{max: 100, value: 60, textFormat: 'percent'},
 	{max: 100, value: 75, textFormat: 'percent', startAngle: -90},
-	{max: 4, value: 3, textFormat: 'vertical', clockwise: false, animation: 'none'},
+	{max: 4, value: 3, textFormat: 'vertical', anticlockwise: true, animation: 'none'},
 ];
 
 options.forEach(function(opts, i) {

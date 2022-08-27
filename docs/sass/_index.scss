@@ -53,42 +53,43 @@
 		padding: 20px 50px 0 20px;
 		width: 300px;
 
-		> svg {
+		&::part(svg) {
 			width: 100%;
+			height: auto;
 			* {
 				transform-box: fill-box;
 				transform-origin: center;
 			}
 		}
 
-		.circle-progress-value {
+		&::part(value) {
 			stroke-width: 6px;
 			stroke: hsl(39, 100%, 50%);
 		}
-		.circle-progress-circle {
+		&::part(circle) {
 			stroke-width: 6px;
 			stroke: hsl(39, 100%, 85%);
 		}
-		.circle-progress-text {
+		&::part(text) {
 			fill: hsl(39, 100%, 50%);
 		}
-		.circle-progress-text-value {
+		&::part(text-value) {
 			fill: inherit;
 		}
 
 		&[data-style="1"] {
-			.circle-progress-value {
+			&::part(value) {
 				transition: .4s .3s;
 				stroke-linecap: round;
 				stroke-width: 12;
 				stroke: hsl(300, 80%, 64%);
 			}
-			.circle-progress-circle {
+			&::part(circle) {
 				transition: .4s;
 				stroke: hsl(300, 80%, 85%);
 				stroke-width: 3;
 			}
-			.circle-progress-text {
+			&::part(text) {
 				fill: hsl(0, 0%, 30%);
 				font-size: 22px;
 				transition: .4s;
@@ -96,7 +97,7 @@
 		}
 
 		&[data-style="2"] {
-			.circle-progress-value {
+			&::part(value) {
 				animation: .4s dots both;
 				stroke-width: 12;
 				stroke-linecap: round;
@@ -111,12 +112,12 @@
 					}
 				}
 			}
-			.circle-progress-circle {
+			&::part(circle) {
 				transition: .4s .4s;
 				stroke-width: 0;
 				stroke: hsl(0, 0%, 85%);
 			}
-			.circle-progress-text {
+			&::part(text) {
 				fill: hsl(0, 0%, 30%);
 				font-size: 22px;
 				transform: scale(0);
@@ -126,7 +127,7 @@
 		}
 
 		&[data-style="3"] {
-			.circle-progress-value {
+			&::part(value) {
 				animation: grow-value .5s both;
 				stroke-width: 12;
 				stroke-linecap: round;
@@ -143,11 +144,11 @@
 					}
 				}
 			}
-			.circle-progress-circle {
+			&::part(circle) {
 				stroke-width: 0;
 				stroke: hsl(0, 0%, 85%);
 			}
-			.circle-progress-text {
+			&::part(text) {
 				fill: hsl(333, 100%, 50%);
 				font-size: 16px;
 				transition: transform .4s;
@@ -155,7 +156,7 @@
 		}
 
 		&[data-style="4"] {
-			.circle-progress-value {
+			&::part(value) {
 				animation: value-4 .5s both;
 				stroke-width: 12;
 				stroke-linecap: round;
@@ -173,7 +174,7 @@
 					}
 				}
 			}
-			.circle-progress-circle {
+			&::part(circle) {
 				animation: grow-circle .5s both;
 				stroke-width: 0;
 				stroke: hsl(0, 0%, 85%);
@@ -189,7 +190,7 @@
 					}
 				}
 			}
-			.circle-progress-text {
+			&::part(text) {
 				fill: hsl(0, 0%, 85%);
 				font-size: 16px;
 				transition: transform .4s;
@@ -197,10 +198,10 @@
 		}
 
 		&[data-style="5"] {
-			.circle-progress-value {
+			&::part(value) {
 				animation: .4s grow-xxl-value both;
 			}
-			.circle-progress-circle {
+			&::part(circle) {
 				animation: .4s grow-xxl-circle both;
 				stroke: hsl(0, 0%, 85%);
 			}
@@ -222,15 +223,15 @@
 					stroke-width: 50;
 				}
 			}
-			.circle-progress-text {
+			&::part(text) {
 				fill: hsl(0, 0%, 100%);
 				transition: .4s;
 				transform: translate(23.7px, 7.7px);
 			}
-			.circle-progress-text-max {
+			&::part(text-max) {
 				display: none;
 			}
-			.circle-progress-text-value {
+			&::part(text-value) {
 				font-size: 16px;
 			}
 		}
