@@ -1,84 +1,68 @@
 'use strict';
 
-// IE11 polyfills
-if (!Element.prototype.matches)
-	Element.prototype.matches = Element.prototype.msMatchesSelector ||
-		Element.prototype.webkitMatchesSelector;
-
-if (!Element.prototype.closest) {
-	Element.prototype.closest = function(s) {
-		var el = this;
-		if (!document.documentElement.contains(el)) return null;
-		do {
-			if (el.matches(s)) return el;
-			el = el.parentElement || el.parentNode;
-		} while (el !== null && el.nodeType === 1);
-		return null;
-	};
-}
-
 
 // Examples
-var options = [
-	{max: 100, value: 60, textFormat: 'percent'},
-	{max: 100, value: 60},
-	{max: 100, value: 60},
-	{max: 100, value: 60, textFormat: 'vertical'},
-	{max: 100, value: 60, textFormat: 'vertical'},
-	{max: 100, value: 60, textFormat: 'vertical'},
-	{max: 12, value: 9, textFormat: function(value, max) {
-		return value + ' dots';
-	}},
-	{max: 100, value: 40, textFormat: 'valueOnCircle'},
-	{max: 100, value: 40, textFormat: 'percent'},
-	{max: 100, value: 80, textFormat: 'percent'},
-	{max: 100, value: 60, textFormat: 'percent'},
-	{max: 100, value: 75, textFormat: 'percent', startAngle: -90},
-	{max: 4, value: 3, textFormat: 'vertical', anticlockwise: true, animation: 'none'},
-];
-
-options.forEach(function(opts, i) {
-	var exampleEl = document.querySelector('.example:nth-child(' + (i + 1) + ')');
-	new CircleProgress(exampleEl.querySelector('.progress'), opts);
-	// $(exampleEl.querySelector('.progress')).circleProgress(opts);
-	var optsStr = '{\n';
-	for(var name in opts) {
-		var value = opts[name];
-		if(typeof value === 'string') {
-			value = '\'' + value + '\'';
+[...document.querySelectorAll('.example')].forEach(function(exampleEl, i) {
+	const cp = exampleEl.querySelector('.progress')
+	if (i === 6) {
+		cp.textFormat = function(value, max) {
+			return value + ' dots';
 		}
-		optsStr += '\t' + name + ': ' + value + ',\n';
 	}
-	optsStr += '}';
-	exampleEl.querySelector('.variant-vanilla code').innerText = 'new CircleProgress(\'.progress\', ' + optsStr + ');';
-	exampleEl.querySelector('.variant-jquery code').innerText = '$(\'.progress\').circleProgress(' + optsStr + ');';
+	// $(exampleEl.querySelector('.progress')).circleProgress(opts);
+	const exampleCodeBlock = exampleEl.querySelector('.example-code-block')
+	exampleCodeBlock.innerHTML = `
+		<h3>
+			<a class="select-variant" href="#vanilla" data-variant="vanilla">HTML</a>
+			<span class="slash"> / </span>
+			<a class="select-variant" href="#jquery" data-variant="jquery">jQuery</a>
+		</h3>
+		<pre class="variant-vanilla"><code class="code html"></code></pre>
+		<pre class="variant-jquery"><code class="code js"></code></pre>
+		<h3>CSS</h3>
+		<pre><code class="code css"></code></pre>
+	`
+	const cpText = cp.outerHTML
+		.replace(/\s*class="progress"\s*/, ' ')
+		.replace(/=""/g, '')
+		.replace(/ /g, '\n\t')
+		.replace(/></g, '\n$&')
+	exampleEl.querySelector('.variant-vanilla code').innerText = cpText
+	// exampleEl.querySelector('.variant-jquery code').innerText = '$(\'.progress\').circleProgress(' + optsStr + ');';
+	const style = exampleEl.querySelector('style')
+	const styleText = style.textContent.trim().replace(/\n\t{4}/g, '\n')
+	exampleEl.querySelector('.code.css').textContent = styleText || '\n\n\n'
+	style.textContent = style.textContent.replace(/circle-progress/g, `.example:nth-of-type(${i + 1}) $&`)
 	exampleEl.querySelector('.example-figure').insertAdjacentHTML('beforeend', '<div class="controls">' +
 		'<label><input type="number" name="min" value="0">min</label>' +
-		'<label><input type="number" name="value" value="' + opts.value + '">value</label>' +
-		'<label><input type="number" name="max" value="' + opts.max + '">max</label>' +
+		'<label><input type="number" name="value" value="' + cp.getAttribute('value') + '">value</label>' +
+		'<label><input type="number" name="max" value="' + cp.getAttribute('max') + '">max</label>' +
 	'</div>');
-});
 
+	[...exampleEl.querySelectorAll('.select-variant')].forEach(el =>
+		el.addEventListener('click', function(e) {
+			e.preventDefault();
+			if(el.dataset.variant === 'vanilla') {
+				document.body.classList.remove('show-variant-jquery');
+				document.body.classList.add('show-variant-vanilla');
+			} else {
+				document.body.classList.remove('show-variant-vanilla');
+				document.body.classList.add('show-variant-jquery');
+			}
+		})
+	)
 
-
-
-hljs.initHighlightingOnLoad();
-
-Array.prototype.slice.call(document.querySelectorAll('.select-variant')).forEach(function(btn) {
-	btn.addEventListener('click', function(e) {
-		e.preventDefault();
-		if(this.dataset.variant === 'vanilla') {
-			document.body.classList.remove('show-variant-jquery');
-			document.body.classList.add('show-variant-vanilla');
-		} else {
-			document.body.classList.remove('show-variant-vanilla');
-			document.body.classList.add('show-variant-jquery');
-		}
+	exampleEl.querySelector('.controls').addEventListener('change', function(e) {
+		if(e.target.nodeName !== 'INPUT') return;
+		const key = e.target.name;
+		cp[key] = e.target.value;
+		[...exampleEl.querySelectorAll('.controls input')].forEach(function(input) {
+			input.value = cp[input.name];
+		});
 	});
 });
 
-
-Array.prototype.slice.call(document.querySelectorAll('.code')).forEach(function(el) {
+[...document.querySelectorAll('.code')].forEach(function(el) {
 	el.addEventListener('click', function() {
 		var r = document.createRange();
 		r.selectNode(this);
@@ -89,13 +73,4 @@ Array.prototype.slice.call(document.querySelectorAll('.code')).forEach(function(
 });
 
 
-document.body.addEventListener('change', function(e) {
-	if(e.target.nodeName !== 'INPUT') return;
-	var key = e.target.name;
-	var exampleEl = e.target.closest('.example');
-	var cp = exampleEl.querySelector('.progress').circleProgress;
-	cp[key] = e.target.value;
-	Array.prototype.slice.call(exampleEl.querySelectorAll('.controls input')).forEach(function(input) {
-		input.value = cp[input.name];
-	});
-});
+hljs.initHighlightingOnLoad();

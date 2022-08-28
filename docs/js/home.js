@@ -4,7 +4,6 @@ function init() {
 	const introEl = document.querySelector('.intro');
 	const cp = document.querySelector('.progress');
 
-	cp.attr({max: 100, value: 60, textFormat: 'value', animation: 'easeInOutCubic'})
 	cp.graph.paper.svg.setAttribute('viewBox', '-10 -10 120 120');
 
 
@@ -37,7 +36,7 @@ function init() {
 				clearInterval(interv);
 				return;
 			}
-			cp.el.dataset.style = i;
+			cp.dataset.style = i;
 			if(i === 5) {
 				updateGraph();
 				setTimeout(function() {
