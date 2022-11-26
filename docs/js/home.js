@@ -2,9 +2,29 @@
 
 function init() {
 	const introEl = document.querySelector('.intro');
-	const cp = document.querySelector('.progress');
+	const cp = document.querySelector('.intro-progress');
 
 	cp.graph.paper.svg.setAttribute('viewBox', '-10 -10 120 120');
+
+	// We have to inject keyframes into shadow dom of the element,
+	// otherwise animations don't work.
+	// Chromium bug: https://bugs.chromium.org/p/chromium/issues/detail?id=838526#c18
+	// Firefox bug: https://bugzilla.mozilla.org/show_bug.cgi?id=1458189
+	const keyframeNames = [
+		'dots',
+		'grow-value',
+		'value-4',
+		'grow-circle',
+		'grow-xxl-value',
+		'grow-xxl-circle',
+	];
+	[...document.styleSheets[1].cssRules]
+		.filter(
+			rule =>
+				rule.constructor.name === 'CSSKeyframesRule' &&
+				keyframeNames.includes(rule.name)
+			)
+		.map(rule => cp.shadowRoot.styleSheets[0].insertRule(rule.cssText));
 
 
 	setTimeout(function() {
@@ -30,9 +50,6 @@ function init() {
 		const interv = setInterval(function() {
 			i += 1;
 			if(i === 6) {
-				cp.textFormat = 'valueOnCircle';
-				cp.graph.text.el.style.transition = 'none';
-				cp.graph.text.el.style.transform = 'none';
 				clearInterval(interv);
 				return;
 			}
