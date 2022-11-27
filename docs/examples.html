@@ -26,7 +26,6 @@
 			<div class="example-figure">
 				<circle-progress class="progress" max="100" value="60" text-format="percent"></circle-progress>
 			</div>
-			<div class="example-code-block"></div>
 			<style>
 				circle-progress::part(value) {
 					stroke-width: 6px;
@@ -46,7 +45,6 @@
 			<div class="example-figure">
 				<circle-progress class="progress" max="100" value="60"></circle-progress>
 			</div>
-			<div class="example-code-block"></div>
 			<style>
 				circle-progress::part(value) {
 					stroke-width: 6px;
@@ -68,7 +66,6 @@
 			<div class="example-figure">
 				<circle-progress class="progress" max="100" value="60"></circle-progress>
 			</div>
-			<div class="example-code-block"></div>
 			<style>
 				circle-progress::part(value) {
 					stroke-width: 6px;
@@ -85,7 +82,6 @@
 			<div class="example-figure">
 				<circle-progress class="progress" max="100" value="60" text-format="vertical"></circle-progress>
 			</div>
-			<div class="example-code-block"></div>
 			<style>
 				circle-progress::part(value) {
 					stroke-width: 50px;
@@ -105,7 +101,6 @@
 			<div class="example-figure">
 				<circle-progress class="progress" max="100" value="60" text-format="vertical"></circle-progress>
 			</div>
-			<div class="example-code-block"></div>
 			<style>
 				circle-progress::part(value) {
 					stroke-width: 6px;
@@ -126,7 +121,6 @@
 			<div class="example-figure">
 				<circle-progress class="progress" max="100" value="60" text-format="vertical"></circle-progress>
 			</div>
-			<div class="example-code-block"></div>
 			<style>
 				circle-progress::part(value) {
 					stroke-width: 50px;
@@ -148,7 +142,6 @@
 			<div class="example-figure">
 				<circle-progress class="progress" max="12" value="9" animation="none"></circle-progress>
 			</div>
-			<div class="example-code-block"></div>
 			<style>
 				circle-progress::part(value) {
 					stroke-width: 11px;
@@ -175,7 +168,6 @@
 			<div class="example-figure">
 				<circle-progress class="progress" max="100" value="40" text-format="valueOnCircle"></circle-progress>
 			</div>
-			<div class="example-code-block"></div>
 			<style>
 
 
@@ -187,7 +179,6 @@
 			<div class="example-figure">
 				<circle-progress class="progress" max="100" value="40" text-format="percent"></circle-progress>
 			</div>
-			<div class="example-code-block"></div>
 			<style>
 				circle-progress::part(value) {
 					stroke-width: 12px;
@@ -210,7 +201,6 @@
 			<div class="example-figure">
 				<circle-progress class="progress" max="100" value="80" text-format="percent"></circle-progress>
 			</div>
-			<div class="example-code-block"></div>
 			<style>
 				circle-progress::part(value) {
 					stroke-width: 2px;
@@ -231,7 +221,6 @@
 			<div class="example-figure">
 				<circle-progress class="progress" max="100" value="60" text-format="percent"></circle-progress>
 			</div>
-			<div class="example-code-block"></div>
 			<style>
 				circle-progress::part(value) {
 					stroke-width: 6px;
@@ -256,7 +245,6 @@
 			<div class="example-figure">
 				<circle-progress class="progress" max="100" value="75" text-format="percent" start-angle="-90"></circle-progress>
 			</div>
-			<div class="example-code-block"></div>
 			<style>
 				circle-progress::part(value) {
 					stroke-width: 12px;
@@ -279,7 +267,6 @@
 			<div class="example-figure">
 				<circle-progress class="progress" max="4" value="3" text-format="vertical" anticlockwise animation="none"></circle-progress>
 			</div>
-			<div class="example-code-block"></div>
 			<style>
 				circle-progress::part(value) {
 					stroke-width: 25px;
@@ -298,6 +285,25 @@
 				}
 			</style>
 		</div>
+
+		<!-- Example templates -->
+		<template id="example-code-block-template">
+			<div class="example-code-block">
+				<h3>HTML</h3>
+				<pre><code class="code html"></code></pre>
+				<h3>CSS</h3>
+				<pre><code class="code css"></code></pre>
+			</div>
+		</template>
+
+		<template id="example-controls-template">
+			<div class="controls">
+				<label><input type="number" name="min" value="0">min</label>
+				<label><input type="number" name="value">value</label>
+				<label><input type="number" name="max">max</label>
+			</div>
+		</template>
+
 		</div><!-- .examples -->
 
 		<footer class="site-footer">

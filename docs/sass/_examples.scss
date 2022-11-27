@@ -84,33 +84,6 @@ circle-progress {
 	margin: 1rem 0 0;
 	color: hsl(14, 80%, 50%);
 }
-.slash {
-	color: gray;
-}
-.select-variant {
-	text-decoration: none;
-	color: inherit;
-}
-.select-variant[data-variant=jquery] {
-	color: gray;
-}
-.variant-jquery {
-	display: none;
-}
-body.show-variant-jquery {
-	.select-variant[data-variant=vanilla] {
-		color: gray;
-	}
-	.select-variant[data-variant=jquery] {
-		color: inherit;
-	}
-	.variant-jquery {
-		display: block;
-	}
-	.variant-vanilla {
-		display: none;
-	}
-}
 
 .code {
 	background: hsl(0, 0%, 22%);

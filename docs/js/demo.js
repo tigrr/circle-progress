@@ -2,55 +2,43 @@
 
 
 // Examples
-[...document.querySelectorAll('.example')].forEach(function(exampleEl, i) {
+const exampleCodeTemplate = document.querySelector('#example-code-block-template')
+const exampleControlsTemplate = document.querySelector('#example-controls-template')
+
+;[...document.querySelectorAll('.example')].forEach(function(exampleEl, i) {
 	const cp = exampleEl.querySelector('.progress')
+
 	if (i === 6) {
-		cp.textFormat = function(value, max) {
+		cp.textFormat = function(value) {
 			return value + ' dots';
 		}
 	}
-	// $(exampleEl.querySelector('.progress')).circleProgress(opts);
-	const exampleCodeBlock = exampleEl.querySelector('.example-code-block')
-	exampleCodeBlock.innerHTML = `
-		<h3>
-			<a class="select-variant" href="#vanilla" data-variant="vanilla">HTML</a>
-			<span class="slash"> / </span>
-			<a class="select-variant" href="#jquery" data-variant="jquery">jQuery</a>
-		</h3>
-		<pre class="variant-vanilla"><code class="code html"></code></pre>
-		<pre class="variant-jquery"><code class="code js"></code></pre>
-		<h3>CSS</h3>
-		<pre><code class="code css"></code></pre>
-	`
+
+
+	const exampleBlock = exampleCodeTemplate.content.cloneNode(true)
+
 	const cpText = cp.outerHTML
 		.replace(/\s*class="progress"\s*/, ' ')
 		.replace(/=""/g, '')
 		.replace(/ /g, '\n\t')
 		.replace(/></g, '\n$&')
-	exampleEl.querySelector('.variant-vanilla code').innerText = cpText
-	// exampleEl.querySelector('.variant-jquery code').innerText = '$(\'.progress\').circleProgress(' + optsStr + ');';
-	const style = exampleEl.querySelector('style')
-	const styleText = style.textContent.trim().replace(/\n\t{4}/g, '\n')
-	exampleEl.querySelector('.code.css').textContent = styleText || '\n\n\n'
-	style.textContent = style.textContent.replace(/circle-progress/g, `.example:nth-of-type(${i + 1}) $&`)
-	exampleEl.querySelector('.example-figure').insertAdjacentHTML('beforeend', '<div class="controls">' +
-		'<label><input type="number" name="min" value="0">min</label>' +
-		'<label><input type="number" name="value" value="' + cp.getAttribute('value') + '">value</label>' +
-		'<label><input type="number" name="max" value="' + cp.getAttribute('max') + '">max</label>' +
-	'</div>');
+	exampleBlock.querySelector('.code.html').innerText = cpText
 
-	[...exampleEl.querySelectorAll('.select-variant')].forEach(el =>
-		el.addEventListener('click', function(e) {
-			e.preventDefault();
-			if(el.dataset.variant === 'vanilla') {
-				document.body.classList.remove('show-variant-jquery');
-				document.body.classList.add('show-variant-vanilla');
-			} else {
-				document.body.classList.remove('show-variant-vanilla');
-				document.body.classList.add('show-variant-jquery');
-			}
-		})
-	)
+	const style = exampleEl.querySelector('style')
+	exampleBlock.querySelector('.code.css').textContent =
+		style.textContent
+			.trim()
+			.replace(/\n\t{4}/g, '\n') ||
+		'\n\n\n'
+	style.textContent = style.textContent.replace(/circle-progress/g, `.example:nth-of-type(${i + 1}) $&`)
+
+	exampleEl.querySelector('.example-figure').after(exampleBlock)
+
+
+	const controls = exampleControlsTemplate.content.cloneNode(true)
+	controls.querySelector('[name=value]').value = cp.getAttribute('value')
+	controls.querySelector('[name=max]').value = cp.getAttribute('max')
+	exampleEl.querySelector('.example-figure').append(controls)
 
 	exampleEl.querySelector('.controls').addEventListener('change', function(e) {
 		if(e.target.nodeName !== 'INPUT') return;
