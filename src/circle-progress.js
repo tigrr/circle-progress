@@ -93,7 +93,7 @@ class CircleProgress extends HTMLElement {
 	 * @param {Object}                opts  Options
 	 * @param {Document}              [doc] Document
 	 */
-	constructor(opts = {}, doc = document) {
+	constructor(opts = {}) {
 		super();
 		let circleThickness;
 
@@ -163,7 +163,7 @@ class CircleProgress extends HTMLElement {
 		]
 	}
 
-	static propAttrDict = {
+	static #propAttrDict = {
 		startAngle: 'start-angle',
 		indeterminateText: 'indeterminate-text',
 		textFormat: 'text-format',
@@ -175,8 +175,8 @@ class CircleProgress extends HTMLElement {
 	 * @param {string} name Attribute name
 	 * @return {string} Property name
 	 */
-	static attrToProp(name) {
-		const pair = Object.entries(CircleProgress.propAttrDict).find(
+	static #attrNameToProp(name) {
+		const pair = Object.entries(CircleProgress.#propAttrDict).find(
 			([_, attr]) => attr === name
 		)
 		return pair ? pair[0] : name
@@ -188,7 +188,7 @@ class CircleProgress extends HTMLElement {
 	 * @param {(string|null)} value Attribute value
 	 * @return Property value
 	 */
-	static attrValToProp(name, value) {
+	static #attrValToProp(name, value) {
 		if (['anticlockwise', 'unconstrained'].includes(name)) {
 			return value !== null
 		}
@@ -200,24 +200,24 @@ class CircleProgress extends HTMLElement {
 	 * @param {string} name Property name
 	 * @return {string} Attribute name
 	 */
-	static propToAttr(name) {
-		return CircleProgress.propAttrDict[name] ?? name
+	static #propToAttrName(name) {
+		return CircleProgress.#propAttrDict[name] ?? name
 	}
 
-	_bailOutAttrUpdate = false
+	#bailOutAttrUpdate = false
 
 	attributeChangedCallback(name, _, newValue) {
-		if (this._bailOutAttrUpdate) {
-			this._bailOutAttrUpdate = false
+		if (this.#bailOutAttrUpdate) {
+			this.#bailOutAttrUpdate = false
 			return
 		}
-		this._set(CircleProgress.attrToProp(name), CircleProgress.attrValToProp(name, newValue))
+		this._set(CircleProgress.#attrNameToProp(name), CircleProgress.#attrValToProp(name, newValue))
 		this._updateGraph()
 	}
 
-	reflectPropToAttribute(prop, value) {
-		this._bailOutAttrUpdate = true
-		const attr = CircleProgress.propToAttr(prop)
+	#reflectPropToAttribute(prop, value) {
+		this.#bailOutAttrUpdate = true
+		const attr = CircleProgress.#propToAttrName(prop)
 		if (['anticlockwise', 'unconstrained'].includes(prop)) {
 			if (value) {
 				this.setAttribute(attr, '')
@@ -241,7 +241,7 @@ class CircleProgress extends HTMLElement {
 		if(typeof attrs === 'string') {
 			if(arguments.length === 1) return this._attrs[attrs];
 			this._set(arguments[0], arguments[1]);
-			this.reflectPropToAttribute(arguments[0], arguments[1])
+			this.#reflectPropToAttribute(arguments[0], arguments[1])
 			this._updateGraph();
 			return this;
 		} else if(typeof attrs !== 'object') {
@@ -252,7 +252,7 @@ class CircleProgress extends HTMLElement {
 		}
 		attrs.forEach(attr => {
 			this._set(attr[0], attr[1])
-			this.reflectPropToAttribute(attr[0], attr[1])
+			this.#reflectPropToAttribute(attr[0], attr[1])
 		});
 		this._updateGraph();
 		return this;
