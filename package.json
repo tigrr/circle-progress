@@ -24,12 +24,16 @@
 	"main": "dist/circle-progress.js",
 	"scripts": {
 		"start": "web-dev-server --open docs/examples.html --watch",
-		"build": "rollup --config rollup.config.js"
+		"build": "rollup --config rollup.config.js",
+		"test": "web-test-runner"
 	},
 	"devDependencies": {
+		"@esm-bundle/chai": "^4.3.4-fix.0",
 		"@rollup/plugin-terser": "^0.4.3",
 		"@web/dev-server": "^0.2.5",
 		"@web/dev-server-import-maps": "^0.1.1",
+		"@web/test-runner": "^0.16.1",
+		"@web/test-runner-playwright": "^0.10.1",
 		"rollup": "^3.26.2"
 	}
 }
