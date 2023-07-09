@@ -9,7 +9,7 @@
 const animator = function(easing, startValue, valueChange, dur, cb) {
 	const easeFunc = typeof easing === 'string' ? easings[easing] : easing;
 	let tStart;
-	let animHandle
+	let animHandle;
 
 	const frame = function(t) {
 		if(!tStart) tStart = t;
@@ -25,7 +25,7 @@ const animator = function(easing, startValue, valueChange, dur, cb) {
 
 	return {
 		cancel: () => {
-			cancelAnimationFrame(animHandle)
+			cancelAnimationFrame(animHandle);
 		}
 	}
 };

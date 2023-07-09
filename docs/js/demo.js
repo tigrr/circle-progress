@@ -1,6 +1,3 @@
-'use strict';
-
-
 // Examples
 const exampleCodeTemplate = document.querySelector('#example-code-block-template')
 const exampleControlsTemplate = document.querySelector('#example-controls-template')
@@ -10,7 +7,7 @@ const exampleControlsTemplate = document.querySelector('#example-controls-templa
 
 	if (i === 6) {
 		cp.textFormat = function(value) {
-			return value + ' dots';
+			return value + ' dots'
 		}
 	}
 
@@ -41,24 +38,30 @@ const exampleControlsTemplate = document.querySelector('#example-controls-templa
 	exampleEl.querySelector('.example-figure').append(controls)
 
 	exampleEl.querySelector('.controls').addEventListener('change', function(e) {
-		if(e.target.nodeName !== 'INPUT') return;
-		const key = e.target.name;
-		cp[key] = e.target.value;
-		[...exampleEl.querySelectorAll('.controls input')].forEach(function(input) {
-			input.value = cp[input.name];
-		});
-	});
-});
+		if(e.target.nodeName !== 'INPUT') {
+			return
+		}
+		cp[e.target.name] = e.target.value
+		;[...exampleEl.querySelectorAll('.controls input')].forEach(function(input) {
+			input.value = cp[input.name]
+		})
+	})
 
-[...document.querySelectorAll('.code')].forEach(function(el) {
+	// Make sure demo is loaded before custom elements have been defined and upgraded,
+	// since we want the raw html from circle-progress before any properties have been reflected to attributes
+	import('https://cdn.jsdelivr.net/npm/js-circle-progress/dist/circle-progress.min.js')
+
+})
+
+;[...document.querySelectorAll('.code')].forEach(function(el) {
 	el.addEventListener('click', function() {
-		var r = document.createRange();
-		r.selectNode(this);
-		var s = document.getSelection();
-		s.empty();
-		s.addRange(r);
-	});
-});
+		var r = document.createRange()
+		r.selectNode(this)
+		var s = document.getSelection()
+		s.empty()
+		s.addRange(r)
+	})
+})
 
 
-hljs.initHighlightingOnLoad();
+hljs.initHighlightingOnLoad()

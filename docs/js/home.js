@@ -1,4 +1,4 @@
-'use strict';
+import 'https://cdn.jsdelivr.net/npm/js-circle-progress/dist/circle-progress.min.js';
 
 function init() {
 	const introEl = document.querySelector('.intro');
@@ -75,4 +75,4 @@ function init() {
 	}, 19000);
 }
 
-window.customElements.whenDefined('circle-progress').then(init)
+window.customElements.whenDefined('circle-progress').then(init);
