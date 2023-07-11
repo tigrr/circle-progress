@@ -31,7 +31,7 @@ function init() {
 		'grow-xxl-value',
 		'grow-xxl-circle',
 	];
-	[...document.styleSheets[1].cssRules]
+	[.../** @type HTMLLinkElement */(document.querySelector('.js-keyframes-stylesheet')).sheet.cssRules]
 		.filter(
 			rule =>
 				rule.constructor.name === 'CSSKeyframesRule' &&
