@@ -2,14 +2,14 @@ import { expect } from '@esm-bundle/chai';
 import '../src/circle-progress.js';
 
 describe('Circle Progress', function() {
-	const cp = document.createElement('circle-progress');
+	const cp = /** @type {import('../src/circle-progress').default} */ (document.createElement('circle-progress'));
 	cp.style.marginBottom = '30px';
 	document.body.appendChild(cp);
 
 	beforeEach(() => {
 		cp.min = -1000;
 		cp.max = 1000;
-		cp.constrain = false;
+		cp.unconstrained = false;
 	});
 
 	it('sets value', function() {
@@ -44,7 +44,6 @@ describe('Circle Progress', function() {
 		expect(cp.max).to.equal(0);
 		cp.max = -11;
 		expect(cp.max).to.equal(0);
-		cp.constrain = true;
 		cp.value = -11;
 		expect(cp.value).to.equal(-10);
 		cp.value = 1;

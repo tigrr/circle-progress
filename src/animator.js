@@ -1,10 +1,11 @@
 /**
  * Change any value using an animation easing function.
- * @param  {string}   Easing function.
- * @param  {number}   The initial value
- * @param  {number}   Change in value
- * @param  {number}   Animation duration
- * @param  {Function} Callback to be called on each iteration. The callback is passed one argument: current value.
+ * @param  {string}   easing Easing function.
+ * @param  {number}   startValue The initial value
+ * @param  {number}   valueChange Change in value
+ * @param  {number}   dur Animation duration
+ * @param  {Function} cb Callback to be called on each iteration. The callback is passed one argument: current value.
+ * @return {Object}   Object with cancel method to stop the animation.
  */
 const animator = function(easing, startValue, valueChange, dur, cb) {
 	const easeFunc = typeof easing === 'string' ? easings[easing] : easing;

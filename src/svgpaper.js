@@ -1,6 +1,6 @@
 /**
  * Create new paper holding a new SVG element
- * @param  {(HTMLElement|string)} container      Container element or selector string
+ * @param  {(HTMLElement|ShadowRoot|string)} container      Container element or selector string
  * @param  {(number|string)}      width          SVG width
  * @param  {(number|string)}      height         SVG height
  * @param  {Document}             [doc=document] HTML document. Defaults to current document
@@ -11,14 +11,18 @@ const paper = function(container, width, height, doc) {
 
 	const me = Object.create(paperProto);
 
-	if(typeof container === 'string') container = doc.querySelector(container);
+	if(typeof container === 'string') {
+		container = /** @type {HTMLElement} */ (doc.querySelector(container));
+	}
 
-	if(!container) return;
+	if(!container) {
+		return;
+	}
 
 	const svg = doc.createElementNS('http://www.w3.org/2000/svg', 'svg');
 	svg.setAttribute('version', '1.1');
-	if(width) svg.setAttribute('width', width);
-	if(height) svg.setAttribute('height', height);
+	if(width) svg.setAttribute('width', String(width));
+	if(height) svg.setAttribute('height', String(height));
 	if(width && height) svg.setAttribute('viewBox', '0 0 ' + width + ' ' + height);
 	container.appendChild(svg);
 
@@ -48,7 +52,7 @@ const paperProto = {
  * @param  {Object}     paper    SVG Paper
  * @param  {string}     name     Element tag name
  * @param  {Object}     attrs    Attributes for the element
- * @param  {SVGElement} [parent] Another SVG Element to append the
+ * @param  {SVGElement|{el:SVGAElement}} [parent] Another SVG Element to append to
  * @param  {Document}   [doc]    Document
  * @return {Object}              Element
  */
@@ -60,7 +64,7 @@ const element = function(paper, name, attrs, parent, doc) {
 	me.el = doc.createElementNS('http://www.w3.org/2000/svg', name);
 	me.attr(attrs);
 
-	(parent ? parent.el || parent : paper.svg).appendChild(me.el);
+	(parent ? ('el' in parent ? parent.el : parent) : paper.svg).appendChild(me.el);
 
 	return me;
 };
@@ -71,9 +75,9 @@ const elementProto = {
 	 * @param  {string} name  Attribute name
 	 * @param  {*}      value Attribute value
 	 * @return {object}       The element
-	 * *//**
+	 *//**
 	 * Set attributes
-	 * @param {object} attrs  Map of name - values
+	 * @param {object} name  Map of name - values
 	 * @return {object}       The element
 	 */
 	attr: function(name, value) {

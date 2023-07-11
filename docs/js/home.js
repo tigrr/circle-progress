@@ -1,8 +1,21 @@
 import 'https://cdn.jsdelivr.net/npm/js-circle-progress/dist/circle-progress.min.js';
 
 function init() {
+	/**
+	 * @type {HTMLElement|null}
+	 */
 	const introEl = document.querySelector('.intro');
+	if (!introEl) {
+		throw new Error('No .intro element found in example')
+	}
+
+	/**
+	 * @type {import('../../src/circle-progress').default|null}
+	 */
 	const cp = document.querySelector('.intro-progress');
+	if (!cp) {
+		throw new Error('No .intro-progress element found in example')
+	}
 
 	cp.graph.paper.svg.setAttribute('viewBox', '-10 -10 120 120');
 
@@ -22,9 +35,9 @@ function init() {
 		.filter(
 			rule =>
 				rule.constructor.name === 'CSSKeyframesRule' &&
-				keyframeNames.includes(rule.name)
+				keyframeNames.includes((/** @type {CSSKeyframesRule} */ (rule)).name)
 			)
-		.map(rule => cp.shadowRoot.styleSheets[0].insertRule(rule.cssText));
+		.map(rule => cp.shadowRoot?.styleSheets[0].insertRule(rule.cssText));
 
 
 	setTimeout(function() {
@@ -53,7 +66,7 @@ function init() {
 				clearInterval(interv);
 				return;
 			}
-			cp.dataset.style = i;
+			cp.dataset.style = String(i);
 			if(i === 5) {
 				updateGraph();
 				setTimeout(function() {
@@ -63,7 +76,7 @@ function init() {
 		}, 1600);
 
 		function updateGraph() {
-			cp._updateGraph();
+			cp?.updateGraph();
 			if(i < 6) {
 				requestAnimationFrame(updateGraph);
 			}
