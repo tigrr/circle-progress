@@ -18,14 +18,8 @@
 }
 
 .example {
-	@extend %clearfix;
-	clear: both;
 	margin: 30px 0;
 	padding: 10px 5px;
-	@media screen and (min-width: 50rem) {
-		padding: 25px;
-		// box-shadow: 1px 1px 7px rgba(0, 0, 0, .3);
-	}
 	background: white;
 	border-radius: 3px;
 }
@@ -33,10 +27,18 @@
 	width: -moz-min-content;
 	width: min-content;
 	margin: auto;
-	@media screen and (min-width: 50rem) {
-		float: left;
+}
+@media screen and (min-width: 50rem) {
+	.example {
+		display: flex;
+		padding: 25px;
+	}
+	.example-figure {
 		padding-top: 2.4rem;
 		padding-right: 80px;
+	}
+	.example-code-block {
+		flex: 1;
 	}
 }
 
@@ -85,8 +87,43 @@ circle-progress {
 	color: hsl(14, 80%, 50%);
 }
 
+.code-container {
+	position: relative;
+}
+
 .code {
 	background: hsl(0, 0%, 22%);
 	-moz-tab-size: 4;
 	tab-size: 4;
+}
+
+.copy-code-btn {
+	position: absolute;
+	right: 10px;
+	top: 10px;
+	width: 1.8em;
+	height: 1.8em;
+	display: grid;
+	place-items: center;
+	background: none;
+	border: none;
+	padding: 0;
+	opacity: 0;
+	transition: opacity .3s;
+	cursor: pointer;
+}
+
+.code-container:hover .copy-code-btn {
+	opacity: .4;
+}
+
+.copy-code-btn.copy-code-btn:is(:hover, :focus-visible) {
+	opacity: 1;
+}
+
+.icon {
+	width: 1.2em;
+	height: 1.2em;
+	fill: hsl(0, 0%, 92%);
+	vertical-align: middle;
 }

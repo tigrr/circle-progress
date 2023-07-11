@@ -78,13 +78,10 @@ if (!exampleCodeTemplate || !exampleControlsTemplate) {
 
 })
 
-;[...document.querySelectorAll('.code')].forEach(function(el) {
+;[...document.querySelectorAll('.copy-code-btn')].forEach(function(el) {
 	el.addEventListener('click', function() {
-		var r = document.createRange()
-		r.selectNode(this)
-		var s = document.getSelection()
-		s.empty()
-		s.addRange(r)
+		const code = this.closest('.code-container').querySelector('.code').textContent
+		navigator.clipboard.writeText(code)
 	})
 })
 
