@@ -413,7 +413,7 @@ class CircleProgress extends CustomElement {
 			this.graph.circle.attr('r', r);
 			if(this.animation !== 'none' && this.value !== this.graph.value) {
 				this.#animator = animator(this.animation, this.graph.value, this.value - this.graph.value, this.animationDuration, value => {
-					this.#updateText(Math.round(value), (2 * startAngle + angle) / 2, r);
+					this.#updateText(value === this.value ? value : Math.round(value), (2 * startAngle + angle) / 2, r);
 					angle = this.#valueToAngle(value);
 					this.graph.sector.attr('d', makeSectorPath(50, 50, r, startAngle, angle, clockwise));
 				});
