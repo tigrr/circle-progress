@@ -2,88 +2,98 @@
  * @author Tigran Sargsyan <tigran.sn@gmail.com>
  */
 
+import CustomElement from './custom-element.js';
 import svgpaper from './svgpaper.js';
 import animator, {
 	easings,
 } from './animator.js';
-import {polarToCartesian} from './util.js';
+import {polarToCartesian, makeSectorPath} from './util.js';
 import styles from './styles.js';
 
 
 /**
  * Create a new Circle Progress bar
- * @global
  * @class Circle Progress class
  */
-class CircleProgress extends HTMLElement {
-	get value() {
-		return this.#attrs.value;
-	}
-	set value(val) {
-		this.attr('value', val);
+class CircleProgress extends CustomElement {
+	static styles = styles
+
+	/**
+	 * @type {number} Current value
+	 */
+	value
+
+	/**
+	 * @type {number} Minimum value
+	 * @default 0
+	 */
+	min
+
+	/**
+	 * @type {number} Maximum value
+	 * @default 1
+	 */
+	max
+
+	/**
+	 * @type {number} Start angle
+	 * @default 0
+	 */
+	startAngle
+
+	/**
+	 * @type {boolean} Whether to draw the circle anticlockwise
+	 * @default false
+	 */
+	anticlockwise
+
+	/**
+	 * @type {boolean} Whether to allow values outside of the min-max range
+	 * @default false
+	 */
+	unconstrained
+
+	/**
+	 * @type {string} Text to display when the value is indeterminate
+	 * @default '?'
+	 */
+	indeterminateText
+
+	/**
+	 * @type {string|Function} Text format
+	 * @default 'horizontal'
+	 */
+	textFormat
+
+	/**
+	 * @type {string} Animation easing function
+	 * @default 'easeInOutCubic'
+	 */
+	animation
+
+	/**
+	 * @type {number} Animation duration in milliseconds
+	 * @default 600
+	 */
+	animationDuration
+
+	static props = {
+		value: true,
+		min: true,
+		max: true,
+		startAngle: {attribute: 'start-angle'},
+		anticlockwise: {type: Boolean},
+		unconstrained: {type: Boolean},
+		indeterminateText: {attribute: 'indeterminate-text'},
+		textFormat: {attribute: 'text-format'},
+		animation: true,
+		animationDuration: {attribute: 'animation-duration'},
 	}
 
-	get min() {
-		return this.#attrs.min;
-	}
-	set min(val) {
-		this.attr('min', val);
-	}
-
-	get max() {
-		return this.#attrs.max;
-	}
-	set max(val) {
-		this.attr('max', val);
-	}
-
-	get startAngle() {
-		return this.#attrs.startAngle;
-	}
-	set startAngle(val) {
-		this.attr('startAngle', val);
-	}
-
-	get anticlockwise() {
-		return this.#attrs.anticlockwise;
-	}
-	set anticlockwise(val) {
-		this.attr('anticlockwise', val);
-	}
-
-	get unconstrained() {
-		return this.#attrs.unconstrained;
-	}
-	set unconstrained(val) {
-		this.attr('unconstrained', val);
-	}
-
-	get indeterminateText() {
-		return this.#attrs.indeterminateText;
-	}
-	set indeterminateText(val) {
-		this.attr('indeterminateText', val);
-	}
-
-	get textFormat() {
-		return this.#attrs.textFormat;
-	}
-	set textFormat(val) {
-		this.attr('textFormat', val);
-	}
-
-	get animation() {
-		return this.#attrs.animation;
-	}
-	set animation(val) {
-		this.attr('animation', val);
-	}
-
-	get animationDuration() {
-		return this.#attrs.animationDuration;
-	}
-	set animationDuration(val) {
-		this.attr('animationDuration', val);
+	static get observedAttributes() {
+		return Object.entries(this.props).map(
+			([name, config]) => (config && typeof config === 'object' && config.attribute) || name
+		)
 	}
 
 	static defaults = {
@@ -105,19 +115,33 @@ class CircleProgress extends HTMLElement {
 	 */
 	constructor(opts = {}) {
 		super();
+
+		Object.defineProperties(
+			this,
+			Object.keys(CircleProgress.props).reduce(
+				(descriptors, prop) => {
+					descriptors[prop] = {
+						get() {
+							return this.#attrs[prop];
+						},
+						set(val) {
+							this.attr(prop, val);
+						},
+					}
+					return descriptors;
+				},
+				{}
+			)
+		);
+
 		let circleThickness;
 
 		opts = {...CircleProgress.defaults, ...opts};
 
 		circleThickness = opts.textFormat === 'valueOnCircle' ? 16 : 8;
 
-		const shadowRoot = this.attachShadow({ mode: 'open' });
-		const style = document.createElement('style');
-		style.textContent = styles;
-		shadowRoot.append(style);
-
 		this.graph = {
-			paper: svgpaper(shadowRoot, 100, 100),
+			paper: svgpaper(this.shadowRoot, 100, 100),
 			value: 0,
 		};
 		this.graph.paper.svg.setAttribute('class', 'circle-progress');
@@ -134,7 +158,7 @@ class CircleProgress extends HTMLElement {
 			'stroke-width': circleThickness,
 		});
 		this.graph.sector = this.graph.paper.element('path').attr({
-			d: CircleProgress._makeSectorPath(50, 50, 50 - circleThickness / 2, 0, 0),
+			d: makeSectorPath(50, 50, 50 - circleThickness / 2, 0, 0),
 			class: 'circle-progress-value',
 			part: 'value',
 			fill: 'none',
@@ -150,94 +174,16 @@ class CircleProgress extends HTMLElement {
 			'text-anchor': 'middle',
 			fill: '#999',
 		});
-		this._initText();
+		this.#initText();
 		['indeterminateText', 'textFormat', 'startAngle', 'anticlockwise', 'animation', 'animationDuration', 'unconstrained', 'min', 'max', 'value']
 			.filter(key => key in opts)
-			.forEach(key => this._set(key, opts[key]));
+			.forEach(key => this.#set(key, opts[key]));
 		this.updateGraph()
 	}
 
-	static get observedAttributes() {
-		return [
-			'value',
-			'min',
-			'max',
-			'start-angle',
-			'anticlockwise',
-			'unconstrained',
-			'indeterminate-text',
-			'text-format',
-			'animation',
-			'animation-duration',
-		]
-	}
-
-	static #propAttrDict = {
-		startAngle: 'start-angle',
-		indeterminateText: 'indeterminate-text',
-		textFormat: 'text-format',
-		animationDuration: 'animation-duration',
-	}
-
-	/**
-	 * Convert attribute name to property name
-	 * @param {string} name Attribute name
-	 * @return {string} Property name
-	 */
-	static #attrNameToProp(name) {
-		const pair = Object.entries(CircleProgress.#propAttrDict).find(
-			([_, attr]) => attr === name
-		)
-		return pair ? pair[0] : name
-	}
-
-	/**
-	 * Convert attribute value to property value
-	 * @param {string} name Attribute name
-	 * @param {(string|null)} value Attribute value
-	 * @return Property value
-	 */
-	static #attrValToProp(name, value) {
-		if (['anticlockwise', 'unconstrained'].includes(name)) {
-			return value !== null
-		}
-		return value
-	}
-
-	/**
-	 * Convert property name to attribute name
-	 * @param {string} name Property name
-	 * @return {string} Attribute name
-	 */
-	static #propToAttrName(name) {
-		return CircleProgress.#propAttrDict[name] ?? name
-	}
-
-	#bailOutAttrUpdate = false
-
-	attributeChangedCallback(name, _, newValue) {
-		if (this.#bailOutAttrUpdate) {
-			this.#bailOutAttrUpdate = false
-			return
-		}
-		this._set(CircleProgress.#attrNameToProp(name), CircleProgress.#attrValToProp(name, newValue))
+	update(name, newValue) {
+		this.#set(name, newValue)
 		this.updateGraph()
-	}
-
-	#reflectPropToAttribute(prop, value) {
-		this.#bailOutAttrUpdate = true
-		const attr = CircleProgress.#propToAttrName(prop)
-		if (['anticlockwise', 'unconstrained'].includes(prop)) {
-			if (value) {
-				this.setAttribute(attr, '')
-			} else {
-				this.removeAttribute(attr)
-			}
-		} else if (typeof value === 'function') {
-			this.removeAttribute(attr)
-		} else {
-			this.setAttribute(attr, String(value))
-		}
 	}
 
 	#attrs = {}
@@ -251,8 +197,8 @@ class CircleProgress extends HTMLElement {
 	attr(attrs) {
 		if(typeof attrs === 'string') {
 			if(arguments.length === 1) return this.#attrs[attrs];
-			this._set(arguments[0], arguments[1]);
-			this.#reflectPropToAttribute(arguments[0], arguments[1])
+			this.#set(arguments[0], arguments[1]);
+			this.reflectPropToAttribute(arguments[0], arguments[1])
 			this.updateGraph();
 			return this;
 		} else if(typeof attrs !== 'object') {
@@ -262,8 +208,8 @@ class CircleProgress extends HTMLElement {
 			attrs = Object.keys(attrs).map(key => [key, attrs[key]]);
 		}
 		attrs.forEach(attr => {
-			this._set(attr[0], attr[1])
-			this.#reflectPropToAttribute(attr[0], attr[1])
+			this.#set(attr[0], attr[1])
+			this.reflectPropToAttribute(attr[0], attr[1])
 		});
 		this.updateGraph();
 		return this;
@@ -272,15 +218,14 @@ class CircleProgress extends HTMLElement {
 
 	/**
 	 * Set an attribute to a value
-	 * @private
 	 * @param {string} key Attribute name
 	 * @param {*}      val Attribute value
 	 */
-	_set(key, val) {
+	#set(key, val) {
 		let ariaAttrs = {value: 'aria-valuenow', min: 'aria-valuemin', max: 'aria-valuemax'},
 			circleThickness;
 
-		val = this._formatValue(key, val);
+		val = this.#formatValue(key, val);
 
 		if(val === undefined) throw new TypeError(`Failed to set the ${key} property on CircleProgress: The provided value is non-finite.`);
 		if(this.#attrs[key] === val) return;
@@ -301,7 +246,7 @@ class CircleProgress extends HTMLElement {
 			this.value = Math.min(this.max, Math.max(this.min, this.value));
 		}
 		if(key === 'textFormat') {
-			this._initText();
+			this.#initText();
 			circleThickness = val === 'valueOnCircle' ? 16 : 8;
 			this.graph.sector.attr('stroke-width', circleThickness);
 			this.graph.circle.attr('stroke-width', circleThickness);
@@ -311,22 +256,21 @@ class CircleProgress extends HTMLElement {
 
 	/**
 	 * Format attribute value according to its type
-	 * @private
 	 * @param  {string} key Attribute name
 	 * @param  {*}      val Attribute value
 	 * @return {*}          Formatted attribute value
 	 */
-	_formatValue(key, val) {
+	#formatValue(key, val) {
 		switch(key) {
 			case 'value':
 			case 'min':
 			case 'max':
 				val = Number.parseFloat(val);
-				if(!isFinite(val)) val = undefined;
+				if(!Number.isFinite(val)) val = undefined;
 				break;
 			case 'startAngle':
 				val = Number.parseFloat(val);
-				if(!isFinite(val)) val = undefined;
+				if(!Number.isFinite(val)) val = undefined;
 				else val = Math.max(0, Math.min(360, val));
 				break;
 			case 'anticlockwise':
@@ -334,7 +278,7 @@ class CircleProgress extends HTMLElement {
 				val = !!val;
 				break;
 			case 'indeterminateText':
-				val = '' + val;
+				val = String(val);
 				break;
 			case 'textFormat':
 				if(typeof val !== 'function' && ['valueOnCircle', 'horizontal', 'vertical', 'percent', 'value', 'none'].indexOf(val) === -1) {
@@ -358,10 +302,9 @@ class CircleProgress extends HTMLElement {
 	 * Convert current value to angle
 	 * The caller is responsible to check if the state is not indeterminate.
 	 * This is done for optimization purposes as this method is called from within an animation.
-	 * @private
 	 * @return {number} Angle in degrees
 	 */
-	_valueToAngle(value = this.value) {
+	#valueToAngle(value = this.value) {
 		return Math.min(
 			360,
 			Math.max(
@@ -374,55 +317,22 @@ class CircleProgress extends HTMLElement {
 
 	/**
 	 * Check wether the progressbar is in indeterminate state
-	 * @private
 	 * @return {boolean} True if the state is indeterminate, false if it is determinate
 	 */
-	_isIndeterminate() {
+	#isIndeterminate() {
 		return !(typeof this.value === 'number' && typeof this.max === 'number' && typeof this.min === 'number');
 	}
 
 
 	/**
-	 * Make sector path for use in the "d" path attribute
-	 * @private
-	 * @param  {number} cx         Center x
-	 * @param  {number} cy         Center y
-	 * @param  {number} r          Radius
-	 * @param  {number} startAngle Start angle relative to straight upright axis
-	 * @param  {number} angle      Angle to rotate relative to straight upright axis
-	 * @param  {boolean}  clockwise  Direction of rotation. Clockwise if truethy, anticlockwise if falsy
-	 * @return {string}           Path string
-	 */
-	static _makeSectorPath(cx, cy, r, startAngle, angle, clockwise = false) {
-		if(angle > 0 && angle < 0.3) {
-			// Tiny angles smaller than ~0.3° can produce weird-looking paths
-			angle = 0;
-		} else if(angle > 359.999) {
-			// If progress is full, notch it back a little, so the path doesn't become 0-length
-			angle = 359.999
-		}
-		const endAngle = startAngle + angle * (+clockwise * 2 - 1),
-			startCoords = polarToCartesian(r, startAngle),
-			endCoords = polarToCartesian(r, endAngle),
-			x1 = cx + startCoords.x,
-			x2 = cx + endCoords.x,
-			y1 = cy + startCoords.y,
-			y2 = cy + endCoords.y;
-
-		return ["M", x1, y1, "A", r, r, 0, +(angle > 180), +clockwise, x2, y2].join(' ');
-	}
-
-
-	/**
 	 * Position the value text on the circle
-	 * @private
 	 * @param  {number} angle Angle at which to position the text
 	 * @param  {number} r Circle radius measured to the middle of the stroke
-	 *                   as returned by {@link CircleProgress#_getRadius}, where text should be.
+	 *                   as returned by {@link CircleProgress.getRadius}, where text should be.
 	 *                   The radius is passed rather than calculated inside the function
 	 *                   for optimization purposes as this method is called from within an animation.
 	 */
-	_positionValueText(angle, r) {
+	#positionValueText(angle, r) {
 		const coords = polarToCartesian(r, angle);
 		this.graph.textVal.attr({x: 50 + coords.x, y: 50 + coords.y});
 	}
@@ -430,10 +340,9 @@ class CircleProgress extends HTMLElement {
 
 	/**
 	 * Generate text representation of the values based on {@link CircleProgress#textFormat}
-	 * @private
 	 * TODO: Remove offsets in em when support for IE is dropped
 	 */
-	_initText() {
+	#initText() {
 		this.graph.text.content('');
 		switch(this.textFormat) {
 		case 'valueOnCircle':
@@ -482,7 +391,7 @@ class CircleProgress extends HTMLElement {
 	/**
 	 * @type {ReturnType<animator>|null} Animation
 	 */
-	_animator = null
+	#animator = null
 
 
 	/**
@@ -490,33 +399,33 @@ class CircleProgress extends HTMLElement {
 	 */
 	updateGraph() {
 		const startAngle = this.startAngle - 90;
-		const r = this._getRadius();
+		const r = this.getRadius();
 
-		this._animator?.cancel()
-		if(!this._isIndeterminate()) {
+		this.#animator?.cancel()
+		if(!this.#isIndeterminate()) {
 			const clockwise = !this.anticlockwise;
-			let angle = this._valueToAngle();
+			let angle = this.#valueToAngle();
 			this.graph.circle.attr('r', r);
 			if(this.animation !== 'none' && this.value !== this.graph.value) {
-				this._animator = animator(this.animation, this.graph.value, this.value - this.graph.value, this.animationDuration, value => {
-					this._updateText(Math.round(value), (2 * startAngle + angle) / 2, r);
-					angle = this._valueToAngle(value);
-					this.graph.sector.attr('d', CircleProgress._makeSectorPath(50, 50, r, startAngle, angle, clockwise));
+				this.#animator = animator(this.animation, this.graph.value, this.value - this.graph.value, this.animationDuration, value => {
+					this.#updateText(Math.round(value), (2 * startAngle + angle) / 2, r);
+					angle = this.#valueToAngle(value);
+					this.graph.sector.attr('d', makeSectorPath(50, 50, r, startAngle, angle, clockwise));
 				});
 			} else {
-				this.graph.sector.attr('d', CircleProgress._makeSectorPath(50, 50, r, startAngle, angle, clockwise));
-				this._updateText(this.value, (2 * startAngle + angle) / 2, r);
+				this.graph.sector.attr('d', makeSectorPath(50, 50, r, startAngle, angle, clockwise));
+				this.#updateText(this.value, (2 * startAngle + angle) / 2, r);
 			}
 			this.graph.value = this.value;
 		} else {
-			this._updateText(this.value, startAngle, r);
+			this.#updateText(this.value, startAngle, r);
 		}
 	}
 
 	/**
 	 * Update texts
 	 */
-	_updateText(value, angle, r) {
+	#updateText(value, angle, r) {
 		if(typeof this.textFormat === 'function') {
 			this.graph.text.content(this.textFormat(value, this.max));
 		} else if(this.textFormat === 'value') {
@@ -531,17 +440,16 @@ class CircleProgress extends HTMLElement {
 		}
 
 		if(this.textFormat === 'valueOnCircle') {
-			this._positionValueText(angle, r);
+			this.#positionValueText(angle, r);
 		}
 	}
 
 
 	/**
 	 * Get circles' radius based on the calculated stroke widths of the value path and circle
-	 * @private
 	 * @return {number} The radius
 	 */
-	_getRadius() {
+	getRadius() {
 		return 50 - Math.max(
 			Number.parseFloat(this.ownerDocument.defaultView?.getComputedStyle(this.graph.circle.el, null)['stroke-width'] || 0),
 			Number.parseFloat(this.ownerDocument.defaultView?.getComputedStyle(this.graph.sector.el, null)['stroke-width'] || 0),
