@@ -197,8 +197,10 @@ class CircleProgress extends CustomElement {
 	attr(attrs) {
 		if(typeof attrs === 'string') {
 			if(arguments.length === 1) return this.#attrs[attrs];
-			this.#set(arguments[0], arguments[1]);
-			this.reflectPropToAttribute(arguments[0], arguments[1])
+			if (this.#set(arguments[0], arguments[1]) === false) {
+				return this;
+			}
+			this.reflectPropToAttribute(arguments[0], arguments[1]);
 			this.updateGraph();
 			return this;
 		} else if(typeof attrs !== 'object') {
@@ -208,8 +210,10 @@ class CircleProgress extends CustomElement {
 			attrs = Object.keys(attrs).map(key => [key, attrs[key]]);
 		}
 		attrs.forEach(attr => {
-			this.#set(attr[0], attr[1])
-			this.reflectPropToAttribute(attr[0], attr[1])
+			if (this.#set(attr[0], attr[1]) === false) {
+				return this;
+			}
+			this.reflectPropToAttribute(attr[0], attr[1]);
 		});
 		this.updateGraph();
 		return this;
@@ -220,6 +224,7 @@ class CircleProgress extends CustomElement {
 	 * Set an attribute to a value
 	 * @param {string} key Attribute name
 	 * @param {*}      val Attribute value
+	 * @return {false|void} false if the value is the same as the current one, void otherwise
 	 */
 	#set(key, val) {
 		let ariaAttrs = {value: 'aria-valuenow', min: 'aria-valuemin', max: 'aria-valuemax'},
@@ -228,7 +233,7 @@ class CircleProgress extends CustomElement {
 		val = this.#formatValue(key, val);
 
 		if(val === undefined) throw new TypeError(`Failed to set the ${key} property on CircleProgress: The provided value is non-finite.`);
-		if(this.#attrs[key] === val) return;
+		if(this.#attrs[key] === val) return false;
 		if(key === 'min' && val >= this.max) return;
 		if(key === 'max' && val <= this.min) return;
 		if(key === 'value' && val !== undefined && !this.unconstrained) {
