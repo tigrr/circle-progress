@@ -26,18 +26,18 @@ export const polarToCartesian = (r, angle) => ({
 export const makeSectorPath = (cx, cy, r, startAngle, angle, clockwise = false) => {
 	if(angle > 0 && angle < 0.3) {
 		// Tiny angles smaller than ~0.3° can produce weird-looking paths
-		angle = 0;
+		angle = 0
 	} else if(angle > 359.999) {
 		// If progress is full, notch it back a little, so the path doesn't become 0-length
 		angle = 359.999
 	}
-	const endAngle = startAngle + angle * (+clockwise * 2 - 1),
-		startCoords = polarToCartesian(r, startAngle),
-		endCoords = polarToCartesian(r, endAngle),
-		x1 = cx + startCoords.x,
-		x2 = cx + endCoords.x,
-		y1 = cy + startCoords.y,
-		y2 = cy + endCoords.y;
+	const endAngle = startAngle + angle * (+clockwise * 2 - 1)
+	const startCoords = polarToCartesian(r, startAngle)
+	const endCoords = polarToCartesian(r, endAngle)
+	const x1 = cx + startCoords.x
+	const x2 = cx + endCoords.x
+	const y1 = cy + startCoords.y
+	const y2 = cy + endCoords.y
 
-	return ["M", x1, y1, "A", r, r, 0, +(angle > 180), +clockwise, x2, y2].join(' ');
+	return ["M", x1, y1, "A", r, r, 0, +(angle > 180), +clockwise, x2, y2].join(' ')
 }
