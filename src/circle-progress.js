@@ -270,11 +270,11 @@ class CircleProgress extends CustomElement {
 			case 'value':
 			case 'min':
 			case 'max':
-				val = Number.parseFloat(val);
+				val = Number(val);
 				if(!Number.isFinite(val)) val = undefined;
 				break;
 			case 'startAngle':
-				val = Number.parseFloat(val);
+				val = Number(val);
 				if(!Number.isFinite(val)) val = undefined;
 				else val = Math.max(0, Math.min(360, val));
 				break;
