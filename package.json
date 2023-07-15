@@ -1,6 +1,6 @@
 {
 	"name": "js-circle-progress",
-	"version": "1.0.0",
+	"version": "1.0.0-alpha.0",
 	"description": "Responsive, accessible, animated, stylable with CSS circular progress bar available as plain (vanilla) JS and jQuery plugin.",
 	"keywords": [
 		"progressbar",
@@ -27,7 +27,9 @@
 		"start": "web-dev-server --open docs/examples.html --watch",
 		"build": "rollup --config rollup.config.js && tsc -p tsconfig.prod.json",
 		"test": "web-test-runner",
-		"check": "tsc --noEmit"
+		"check": "tsc --noEmit",
+		"bump": "npm version --preid alpha --git-tag-version false",
+		"prepublishOnly": "npm run build && npm run check && npm run test"
 	},
 	"devDependencies": {
 		"@esm-bundle/chai": "^4.3.4-fix.0",
