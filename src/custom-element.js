@@ -43,7 +43,7 @@ export default class CustomElement extends HTMLElement {
 	 * @return {void}
 	 */
 	// @ts-ignore
-	update(prop, value) {}
+	attributeUpdated(prop, value) {}
 
 	/**
 	 * Convert attribute name to property name
@@ -83,7 +83,7 @@ export default class CustomElement extends HTMLElement {
 			this.#bailOutAttrUpdate = false
 			return
 		}
-		this.update?.(this.#attrNameToProp(name), this.#attrValToProp(name, newValue))
+		this.attributeUpdated?.(this.#attrNameToProp(name), this.#attrValToProp(name, newValue))
 	}
 
 	reflectPropToAttribute(prop, value) {

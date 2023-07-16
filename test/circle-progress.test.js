@@ -9,7 +9,7 @@ const waitFor = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 /**
  * Get SVG text content of a Circle Progress element
  */
-const getText = (cp) => cp.shadowRoot.querySelector('.circle-progress-text').textContent
+const getText = (cp) => cp.shadowRoot.querySelector('.text').textContent
 
 describe('Circle Progress', function() {
 	const cp = /** @type {import('../src/circle-progress').default} */ (document.createElement('circle-progress'))
@@ -27,9 +27,9 @@ describe('Circle Progress', function() {
 		cp.min = -1
 		cp.max = 9
 		cp.value = 5.3
-		expect(cp.shadowRoot?.querySelector('.circle-progress')?.getAttribute('aria-valuemin')).to.equal('-1')
-		expect(cp.shadowRoot?.querySelector('.circle-progress')?.getAttribute('aria-valuemax')).to.equal('9')
-		expect(cp.shadowRoot?.querySelector('.circle-progress')?.getAttribute('aria-valuenow')).to.equal('5.3')
+		expect(cp.shadowRoot?.querySelector('.base')?.getAttribute('aria-valuemin')).to.equal('-1')
+		expect(cp.shadowRoot?.querySelector('.base')?.getAttribute('aria-valuemax')).to.equal('9')
+		expect(cp.shadowRoot?.querySelector('.base')?.getAttribute('aria-valuenow')).to.equal('5.3')
 	})
 
 	it('sets value', function() {
@@ -162,9 +162,9 @@ describe('Circle Progress', function() {
 
 	it('goes clockwise and anticlockwise', function() {
 		cp.anticlockwise = true
-		expect(cp.shadowRoot?.querySelector('.circle-progress-value')?.getAttribute('d')).to.match(/^M (?:[\d.]+ ){2}A (?:[\d.]+ ){4}0/)
+		expect(cp.shadowRoot?.querySelector('.value')?.getAttribute('d')).to.match(/^M (?:[\d.]+ ){2}A (?:[\d.]+ ){4}0/)
 		cp.anticlockwise = false
-		expect(cp.shadowRoot?.querySelector('.circle-progress-value')?.getAttribute('d')).to.match(/^M (?:[\d.]+ ){2}A (?:[\d.]+ ){4}1/)
+		expect(cp.shadowRoot?.querySelector('.value')?.getAttribute('d')).to.match(/^M (?:[\d.]+ ){2}A (?:[\d.]+ ){4}1/)
 	})
 
 	it('should throw error if value, min, max, startAngle is a string that cannot be converted to a number', function() {

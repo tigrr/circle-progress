@@ -144,44 +144,37 @@ class CircleProgress extends CustomElement {
 			paper: svgpaper(this.shadowRoot, 100, 100),
 			value: 0,
 		};
-		this.graph.paper.svg.setAttribute('class', 'circle-progress');
-		this.graph.paper.svg.setAttribute('part', 'svg');
+		this.graph.paper.svg.setAttribute('class', 'base');
+		this.graph.paper.svg.setAttribute('part', 'base');
 		this.graph.paper.svg.setAttribute('role', 'progressbar');
 		this.graph.circle = this.graph.paper.element('circle').attr({
-			class: 'circle-progress-circle',
+			class: 'circle',
 			part: 'circle',
 			cx: 50,
 			cy: 50,
 			r: 50 - circleThickness / 2,
-			fill: 'none',
-			stroke: '#ddd',
 			'stroke-width': circleThickness,
 		});
 		this.graph.sector = this.graph.paper.element('path').attr({
 			d: makeSectorPath(50, 50, 50 - circleThickness / 2, 0, 0),
-			class: 'circle-progress-value',
+			class: 'value',
 			part: 'value',
-			fill: 'none',
-			stroke: '#00E699',
 			'stroke-width': circleThickness,
 		});
 		this.graph.text = this.graph.paper.element('text', {
-			class: 'circle-progress-text',
+			class: 'text',
 			part: 'text',
 			x: 50,
 			y: 50,
-			'font': '16px Arial, sans-serif',
-			'text-anchor': 'middle',
-			fill: '#999',
 		});
 		this.#initText();
-		['indeterminateText', 'textFormat', 'startAngle', 'anticlockwise', 'animation', 'animationDuration', 'unconstrained', 'min', 'max', 'value']
+		Object.keys(CircleProgress.props)
 			.filter(key => key in opts)
 			.forEach(key => this.#set(key, opts[key]));
 		this.updateGraph()
 	}
 
-	update(name, newValue) {
+	attributeUpdated(name, newValue) {
 		this.#set(name, newValue)
 		this.updateGraph()
 	}
@@ -348,45 +341,42 @@ class CircleProgress extends CustomElement {
 	 * TODO: Remove offsets in em when support for IE is dropped
 	 */
 	#initText() {
+		const format = this.textFormat;
 		this.graph.text.content('');
-		switch(this.textFormat) {
+		if (typeof format === 'string' && ['valueOnCircle', 'horizontal', 'vertical'].includes(format)) {
+			this.graph.textVal = this.graph.paper.element('tspan', {class: 'text-value', part: 'text-value'}, '', this.graph.text);
+			if (['horizontal', 'vertical'].includes(format)) {
+				this.graph.textSeparator = this.graph.paper.element('tspan', {class: 'text-separator', part: 'text-separator'}, '', this.graph.text);
+			}
+			this.graph.textMax = this.graph.paper.element('tspan', {class: 'text-max', part: 'text-max'}, '', this.graph.text);
+		}
+		switch(format) {
 		case 'valueOnCircle':
-			this.graph.textVal = this.graph.paper.element('tspan', {
+			this.graph.textVal.attr({
 				x: 0,
 				y: 0,
 				dy: '0.4em',
-				class: 'circle-progress-text-value',
-				part: 'text-value',
-				'font-size': '12',
-				fill: this.textFormat === 'valueOnCircle' ? '#fff' : '#888',
-			}, '', this.graph.text);
-			this.graph.textMax = this.graph.paper.element('tspan', {
+			});
+			this.graph.textMax.attr({
 				x: 50,
 				y: 50,
-				class: 'circle-progress-text-max',
-				part: 'text-max',
-				'font-size': '22',
-				'font-weight':'bold',
-				fill: '#ddd',
-			}, '', this.graph.text);
+			});
 			// IE
 			if(!this.graph.text.el.hasAttribute('dominant-baseline')) this.graph.textMax.attr('dy', '0.4em');
 			break;
 
 		case 'horizontal':
-			this.graph.textVal = this.graph.paper.element('tspan', {class: 'circle-progress-text-value', part: 'text-value'}, '', this.graph.text);
-			this.graph.textSeparator = this.graph.paper.element('tspan', {class: 'circle-progress-text-separator', part: 'text-separator'}, '/', this.graph.text);
-			this.graph.textMax = this.graph.paper.element('tspan', {class: 'circle-progress-text-max', part: 'text-max'}, '', this.graph.text);
+			this.graph.textSeparator.content('/');
 			break;
 
 		case 'vertical':
 			if(this.graph.text.el.hasAttribute('dominant-baseline')) this.graph.text.attr('dominant-baseline', 'text-after-edge');
-			this.graph.textVal = this.graph.paper.element('tspan', {class: 'circle-progress-text-value', part: 'text-value', x: 50, dy: '-0.2em'}, '', this.graph.text);
-			this.graph.textSeparator = this.graph.paper.element('tspan', {class: 'circle-progress-text-separator', part: 'text-separator', x: 50, dy: '0.1em', "font-family": "Arial, sans-serif"}, '___', this.graph.text);
-			this.graph.textMax = this.graph.paper.element('tspan', {class: 'circle-progress-text-max', part: 'text-max', x: 50, dy: '1.2em'}, '', this.graph.text);
+			this.graph.textVal.attr({x: 50, dy: '-0.2em'});
+			this.graph.textSeparator.attr({x: 50, dy: '0.1em', "font-family": "Arial, sans-serif"}).content('___');
+			this.graph.textMax.attr({x: 50, dy: '1.2em'});
 			break;
 		}
-		if(this.textFormat !== 'vertical') {
+		if(format !== 'vertical') {
 			if(this.graph.text.el.hasAttribute('dominant-baseline')) this.graph.text.attr('dominant-baseline', 'central');
 			// IE
 			else this.graph.text.attr('dy', '0.4em');
@@ -413,8 +403,8 @@ class CircleProgress extends CustomElement {
 			this.graph.circle.attr('r', r);
 			if(this.animation !== 'none' && this.value !== this.graph.value) {
 				this.#animator = animator(this.animation, this.graph.value, this.value - this.graph.value, this.animationDuration, value => {
-					this.#updateText(value === this.value ? value : Math.round(value), (2 * startAngle + angle) / 2, r);
 					angle = this.#valueToAngle(value);
+					this.#updateText(value === this.value ? value : Math.round(value), (2 * startAngle + angle) / 2, r);
 					this.graph.sector.attr('d', makeSectorPath(50, 50, r, startAngle, angle, clockwise));
 				});
 			} else {
