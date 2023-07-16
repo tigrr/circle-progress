@@ -26,11 +26,13 @@ export default {
 		{
 			file: 'dist/circle-progress.js',
 			format: 'es',
+			sourcemap: true,
 			banner,
 		},
 		{
 			file: 'dist/circle-progress.min.js',
 			format: 'es',
+			sourcemap: true,
 			banner,
 			plugins: [terser()],
 		},
