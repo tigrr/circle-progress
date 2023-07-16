@@ -86,7 +86,8 @@ export default class CustomElement extends HTMLElement {
 		this.attributeUpdated?.(this.#attrNameToProp(name), this.#attrValToProp(name, newValue))
 	}
 
-	reflectPropToAttribute(prop, value) {
+	reflectPropToAttribute(prop) {
+		const value = this[prop]
 		this.#bailOutAttrUpdate = true
 		const attr = this.#propToAttrName(prop)
 		if (this.#boolProps.has(prop)) {

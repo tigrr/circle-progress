@@ -169,11 +169,11 @@ class CircleProgress extends CustomElement {
 		});
 		this.#initText();
 		Object.keys(CircleProgress.props)
-			.filter(key => key in opts)
-			.forEach(key => this.#set(key, opts[key]));
+			.forEach(key => key in opts && this.#set(key, opts[key]));
 		this.updateGraph()
 	}
 
+	// Called from CustomElement whenever attribute is changed
 	attributeUpdated(name, newValue) {
 		this.#set(name, newValue)
 		this.updateGraph()
@@ -188,25 +188,26 @@ class CircleProgress extends CustomElement {
 	 * @return {CircleProgress}       The CircleProgress instance
 	 */
 	attr(attrs) {
-		if(typeof attrs === 'string') {
-			if(arguments.length === 1) return this.#attrs[attrs];
-			if (this.#set(arguments[0], arguments[1]) === false) {
-				return this;
-			}
-			this.reflectPropToAttribute(arguments[0], arguments[1]);
-			this.updateGraph();
-			return this;
-		} else if(typeof attrs !== 'object') {
+		if(!['string', 'object'].includes(typeof attrs)) {
 			throw new TypeError(`Wrong argument passed to attr. Expected object, got "${typeof attrs}"`);
 		}
+
+		if(typeof attrs === 'string') {
+			if(arguments.length === 1) {
+				return this.#attrs[attrs];
+			}
+			attrs = [[attrs, arguments[1]]];
+		}
+
 		if(!Array.isArray(attrs)) {
 			attrs = Object.keys(attrs).map(key => [key, attrs[key]]);
 		}
-		attrs.forEach(attr => {
-			if (this.#set(attr[0], attr[1]) === false) {
+
+		attrs.forEach(([key, value]) => {
+			if (this.#set(key, value) === false) {
 				return this;
 			}
-			this.reflectPropToAttribute(attr[0], attr[1]);
+			this.reflectPropToAttribute(key);
 		});
 		this.updateGraph();
 		return this;
@@ -240,7 +241,7 @@ class CircleProgress extends CustomElement {
 			if(val !== undefined) this.graph.paper.svg.setAttribute(ariaAttrs[key], val);
 			else this.graph.paper.svg.removeAttribute(ariaAttrs[key]);
 		}
-		if(['min', 'max', 'unconstrained'].indexOf(key) !== -1 && (this.value > this.max || this.value < this.min)) {
+		if(['min', 'max', 'unconstrained'].includes(key) && (this.value > this.max || this.value < this.min)) {
 			this.value = Math.min(this.max, Math.max(this.min, this.value));
 		}
 		if(key === 'textFormat') {
@@ -279,7 +280,7 @@ class CircleProgress extends CustomElement {
 				val = String(val);
 				break;
 			case 'textFormat':
-				if(typeof val !== 'function' && ['valueOnCircle', 'horizontal', 'vertical', 'percent', 'value', 'none'].indexOf(val) === -1) {
+				if(typeof val !== 'function' && !['valueOnCircle', 'horizontal', 'vertical', 'percent', 'value', 'none'].includes(val)) {
 					throw new Error(`Failed to set the "textFormat" property on CircleProgress: the provided value "${val}" is not a legal textFormat identifier.`);
 				}
 				break;
@@ -318,7 +319,7 @@ class CircleProgress extends CustomElement {
 	 * @return {boolean} True if the state is indeterminate, false if it is determinate
 	 */
 	#isIndeterminate() {
-		return !(typeof this.value === 'number' && typeof this.max === 'number' && typeof this.min === 'number');
+		return ['value', 'max', 'min'].some(key => typeof this[key] !== 'number');
 	}
 
 
@@ -343,11 +344,26 @@ class CircleProgress extends CustomElement {
 		const format = this.textFormat;
 		this.graph.text.content('');
 		if (typeof format === 'string' && ['valueOnCircle', 'horizontal', 'vertical'].includes(format)) {
-			this.graph.textVal = this.graph.paper.element('tspan', {class: 'text-value', part: 'text-value'}, '', this.graph.text);
+			this.graph.textVal = this.graph.paper.element(
+				'tspan',
+				{class: 'text-value', part: 'text-value'},
+				'',
+				this.graph.text,
+			);
 			if (['horizontal', 'vertical'].includes(format)) {
-				this.graph.textSeparator = this.graph.paper.element('tspan', {class: 'text-separator', part: 'text-separator'}, '', this.graph.text);
+				this.graph.textSeparator = this.graph.paper.element(
+					'tspan',
+					{class: 'text-separator', part: 'text-separator'},
+					'',
+					this.graph.text,
+				);
 			}
-			this.graph.textMax = this.graph.paper.element('tspan', {class: 'text-max', part: 'text-max'}, '', this.graph.text);
+			this.graph.textMax = this.graph.paper.element(
+				'tspan',
+				{class: 'text-max', part: 'text-max'},
+				'',
+				this.graph.text,
+			);
 		}
 		switch(format) {
 		case 'valueOnCircle':
@@ -394,8 +410,8 @@ class CircleProgress extends CustomElement {
 			if(this.animation !== 'none' && this.value !== this.graph.value) {
 				this.#animator = animator(this.animation, this.graph.value, this.value - this.graph.value, this.animationDuration, value => {
 					angle = this.#valueToAngle(value);
-					this.#updateText(value === this.value ? value : Math.round(value), (2 * startAngle + angle) / 2, r);
 					this.graph.sector.attr('d', makeSectorPath(50, 50, r, startAngle, angle, clockwise));
+					this.#updateText(value === this.value ? value : Math.round(value), (2 * startAngle + angle) / 2, r);
 				});
 			} else {
 				this.graph.sector.attr('d', makeSectorPath(50, 50, r, startAngle, angle, clockwise));
@@ -413,19 +429,25 @@ class CircleProgress extends CustomElement {
 	#updateText(value, angle, r) {
 		if(typeof this.textFormat === 'function') {
 			this.graph.text.content(this.textFormat(value, this.max));
-		} else if(this.textFormat === 'value') {
-			this.graph.text.el.textContent = (value !== undefined ? value : this.indeterminateText);
-		} else if(this.textFormat === 'percent') {
-			this.graph.text.el.textContent = (value !== undefined && this.max != null ? Math.round(value / this.max * 100) : this.indeterminateText) + '%';
-		} else if(this.textFormat === 'none') {
-			this.graph.text.el.textContent = '';
-		} else {
-			this.graph.textVal.el.textContent = value !== undefined ? value : this.indeterminateText;
-			this.graph.textMax.el.textContent = this.max !== undefined ? this.max : this.indeterminateText;
+			return
 		}
 
-		if(this.textFormat === 'valueOnCircle') {
-			this.#positionValueText(angle, r);
+		switch (this.textFormat) {
+			case 'value':
+				this.graph.text.el.textContent = (value !== undefined ? value : this.indeterminateText);
+				break;
+			case 'percent':
+				this.graph.text.el.textContent = (value !== undefined && this.max != null ? Math.round(value / this.max * 100) : this.indeterminateText) + '%';
+				break;
+			case 'none':
+				this.graph.text.el.textContent = '';
+				break;
+			default:
+				this.graph.textVal.el.textContent = value !== undefined ? value : this.indeterminateText;
+				this.graph.textMax.el.textContent = this.max !== undefined ? this.max : this.indeterminateText;
+				if(this.textFormat === 'valueOnCircle') {
+					this.#positionValueText(angle, r);
+				}
 		}
 	}
 
@@ -436,9 +458,16 @@ class CircleProgress extends CustomElement {
 	 */
 	getRadius() {
 		return 50 - Math.max(
-			Number.parseFloat(this.ownerDocument.defaultView?.getComputedStyle(this.graph.circle.el, null)['stroke-width'] || 0),
-			Number.parseFloat(this.ownerDocument.defaultView?.getComputedStyle(this.graph.sector.el, null)['stroke-width'] || 0),
+			this.#getStrokeWidth(this.graph.circle.el),
+			this.#getStrokeWidth(this.graph.sector.el),
 		) / 2;
+	}
+
+	/**
+	 * Get SVG element's stroke-width
+	 */
+	#getStrokeWidth(el) {
+		return Number.parseFloat(this.ownerDocument.defaultView?.getComputedStyle(el)['stroke-width'] || 0);
 	}
 }
 
