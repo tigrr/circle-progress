@@ -1,121 +1,119 @@
 # Circle Progress
 
-> Lightweight (less than 5kB minified and gzipped), responsive, accessible, animated, stylable with CSS circular progress bar available as plain (vanilla) JavaScript and jQuery plugin.
+> Lightweight (less than 4kB minified and gzipped), responsive, accessible, animated, stylable with CSS circular progress bar web component.
 
 ![](https://i.imgur.com/gpxlBmm.png)
 
 See [examples][examples] or go to the [project site][site]
+
+## Circle Progress v1 is out! 🚀
+*New users — skip to [Getting Started](#getting-started) section below.*
+
+There's been a major rewrite of Circle Progress. The new version is a [web component](https://developer.mozilla.org/en-US/docs/Web/API/Web_components) (custom element), which can be used directly in HTML just like any native element. It can also be used programmatically in JavaScript.
+
+The new version is not entirely backwards compatible with the old one. If you need the old version, you can still find it in the [v0 branch](https://github.com/tigrr/circle-progress/tree/web-components).
+
+This version is currently in alpha. Any feedback is much appreciated.
+
+### Breaking changes since v0
+- Internet Explorer is no longer supported.
+- The jQuery variant of the library is no longer provided.
+- The library is only shipped as an ES module.
+- The `clockwise` and `constrain` properties have been revised to `anticlockwise` and `unconstrained` correspondingly, which have the opposite meanings and are both `false` by default.
+- Rather than using classes to style elements inside Circle Progress, such as `.circle-progress-circle`, `.circle-progress-value`, `.circle-progress-text`, you can now use the [`::part()` CSS selector](https://developer.mozilla.org/en-US/docs/Web/CSS/::part), e. g. `circle-progress::part(circle)`, `circle-progress::part(value)`, `circle-progress::part(text)`. See [Styling](#styling) section below or check the [examples][examples] for details.
+- When passing a string for value, min, max or startAngle, it is now converted to number with rather than parse as float. This means you cannot pass it strings that have anything other than valid number characters. On the other hand strings which have numbers represented in any type of notation, such as scientific `1.2e7`, hexadecimal (0x1b4) or octal (0o10) are now properly converted. When making a property assignment (not attribute) you are advised to always pass numbers as numbers, not strings.
+
+What hasn't changed?
+- All the public properties and methods are the same (except for those mentioned above).
+- The look and behavior of the component hasn't changed.
+- You can still use `CircleProgress` programmatically in JavaScript in the same way as before.
+
+Keep on reading for more details.
 
 
 ## Getting Started
 
 ### Using npm
 
-Navigate to your project directory and install the Circle Progress module
+Navigate to your project directory and install the `js-circle-progress` module:
 ```shell
-$ npm install --save js-circle-progress
+$ npm install --save js-circle-progress@alhpa.0
 ```
 
-Given you have this element in your html:
+Import the module anywhere in your application:
+```js
+import 'js-circle-progress'
+```
+
+This will register the `circle-progress` custom element, which you can use in your html:
 ```html
-<div class="progress"></div>
+<circle-progress value="50" max="100"></circle-progress>
 ```
 
-In your script:
+Alternatively, you can import the module in your JavaScript and use it programmatically:
+
+```js
+import 'js-circle-progress'
+
+// Create an instance of CircleProgress element
+const cp = document.createElement('circle-progress')
+```
+
+or
 
 ```js
 import CircleProgress from 'js-circle-progress'
 
-const cp = new CircleProgress('.progress', {
-    value: 50,
-    max: 100,
-})
+// Create an instance of CircleProgress element
+const cp = new CircleProgress()
 ```
 
-Note: you can currently only use plain JavaScript version as an npm module (not jQuery). If you need the jQuery version, please [file an issue](https://github.com/tigrr/circle-progress/issues/new).
+Either way you get the same `CircleProgress` element.
 
 ### Manually downloading the script
 
-### As plain JavaScript
-
 Download the minified [production version][vanilla-min]
 
-In your web page:
+Given you placed the downloaded file in the same folder as your HTML file, in your HTML:
 ```html
-<div class="progress"></div>
+<script src="circle-progress.min.js" type="module"></script>
 
-<script src="dist/circle-progress.min.js"></script>
-
-<script>
-    new CircleProgress('.progress');
-</script>
+<circle-progress value="50" max="100"></circle-progress>
 ```
 
-### As jQuery plugin
+### Using a CDN
 
-Download the minified [jQuery production version][jquery-min]
-
-In your web page:
+In your HTML:
 ```html
-<div class="progress"></div>
+<script src="https://unpkg.com/js-circle-progress/dist/circle-progress.min.js" type="module"></script>
 
-<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-<script src="dist/jquery.circle-progress.min.js"></script>
-
-<script>
-  jQuery(function($) {
-    $('.progress').circleProgress();
-  });
-</script>
+<circle-progress value="50" max="100"></circle-progress>
 ```
 
-#### A note about jQuery file
-jQuery version of Circle Progress is built on top of plain JavaScript version.
-It uses jQuery Widget Factory. Two files are available: one that contains the Widget Factory code, and one that doesn't.
-1. You can use the smaller `jquery.circle-progress.bare.min.js`, if you have already included the jQuery Widget Factory or another native jQuery widget in your page.
-1. Otherwise you must use `jquery.circle-progress.min.js`, which includes the jQuery Widget Factory code.
+**Important! The script is an ES module, so you need to include it with the `type="module"` attribute.**
 
 
 ## Usage
-### Initiate Circle Progress
 
-#### Plain JavaScript
-```js
-const circleProgress = new CircleProgress(element, options, doc);
-```
-where
+### Properties
+There are multiple ways to set properties on Circle Progress.
 
-`element` is HTML element or selector to be converted into a progress circle (required),
-
-`options` - object map of options (optional),
-
-`doc` - the document we are acting upon (optional).
-
-
-#### jQuery
-```js
-$('.progress').circleProgress(options);
-```
-where `options` is object map of options (optional).
-
-
-### Options
-You can customize Circle Progress with these options by either passing options object at initiation, or setting them later, e. g.:
-
-#### In plain js
-
-Set options as properties on a CircleProgress instance:
+Set properties on a `CircleProgress` instance:
 ```js
 circleProgress.max = 100;
 circleProgress.value = 20;
 ```
-or using the chainable `attr` method by passing it option key and value:
+
+or using the chainable `attr` method by passing it property key and value:
+
 ```js
 circleProgress
 	.attr('max', 100)
 	.attr('value', 20);
 ```
+
 or options object
+
 ```js
 circleProgress.attr({
 	max: 100,
@@ -123,30 +121,27 @@ circleProgress.attr({
 });
 ```
 
-#### In jQuery
+When using the constructor, you can pass it options object directly at initialization:
+
 ```js
-$('.progress').circleProgress('value', 20);
-```
-or
-```js
-$('.progress').circleProgress({
-	max: 100,
-	value: 20,
-});
+const cp = new CircleProgress({
+  value: 50,
+  max: 100,
+})
 ```
 
-#### All available options
+#### All available properties
 
-| Option     | Type    | Default | Description |
-| ------     | ----    | ------- | ----------- |
-| value      | Number  | Indeterminate | Current value |
-| min        | Number  | 0       | Minimum value |
-| max        | Number  | 1       | Maximum value |
-| startAngle | Number  | 0       | Starting angle in degrees. Angle of 0 points straight up. Direction depends on `anticlockwise`. |
-| anticlockwise  | Boolean | false    | Whether to rotate anti-clockwise (true) or clockwise (false) |
-| unconstrained  | Boolean | false    | Whether the value should be constrained between `min` and `max`. If false, values over `max` will be truncated to `max` and values under `min` will be set to `min`. |
+| Option            | Type    | Default  | Description |
+| ----------------- | ------- | -------- | ----------- |
+| value             | Number  | Indeterminate | Current value |
+| min               | Number  | 0        | Minimum value |
+| max               | Number  | 1        | Maximum value |
+| startAngle        | Number  | 0        | Starting angle in degrees. Angle of 0 points straight up. Direction depends on `anticlockwise`. |
+| anticlockwise     | Boolean | false    | Whether to rotate anti-clockwise (true) or clockwise (false) |
+| unconstrained     | Boolean | false    | Whether the value should be constrained between `min` and `max`. If false, values over `max` will be truncated to `max` and values under `min` will be set to `min`. |
 | indeterminateText | String | '?' | Text to display as the value when it is indeterminate |
-| textFormat | String or Function | 'horizontal' | Text layout for value, min, max. <br> You can pass either one of the possible keywords: <br> `horizontal` - <samp>value/max</samp> <br> `vertical` - value is shown over max <br> `percent` - <samp>value%</samp> <br> `value` - only value is shown <br> `valueOnCircle` - the value is painted on top of the filled region on the circle <br> `none` - no text is shown. <br>Alternatively you can provide your own function, which will be called each time progress is updated with value and max as arguments and is expected to return a string to insert in the center of the progress circle |
+| textFormat | String or Function | 'horizontal' | Text layout for value, min, max. <br> You can pass either one of the possible keywords: <br> `horizontal` - <samp>value/max</samp> <br> `vertical` - value is shown over max <br> `percent` - <samp>value%</samp> <br> `value` - only value is shown <br> `valueOnCircle` - the value is painted on top of the filled region on the circle <br> `none` - no text is shown. <br>Alternatively you can provide your own function, which will be called each time progress is updated with value and max as arguments, and is expected to return a string of HTML to insert in the center of the progress circle. **Attention! The string returned from your function will be inserted as HTML. Do not pass any dynamic content such as variables coming from elsewhere to avoid XSS vulnerability.** |
 | animation  | String or Function | 'easeInOutCubic' | Animation easing function. Can be a string keyword (see the table below for available easings) or `'none'`.<br>Alternatively, you can pass your own function with the signature <br>`function(time, startAngle, angleDiff, duration)`.<br> The function will be called on each animation frame with the current time (milliseconds since animation start), starting angle, difference in angle (i.e. endAngle - startAngle) and animation duration as arguments, and must return the current angle. |
 | animationDuration | Number | 600 | Animation duration in milliseconds |
 
@@ -178,26 +173,43 @@ The predefined animation easing functions:
 | easeOutCirc    | Circular easing out |
 | easeInOutCirc  | Circular easing in/out |
 
-To customize widget's appearance, you can style its underlying SVG elements with CSS.
+## Styling
+
+To customize widget's appearance, you can style its underlying SVG elements which are exposed as `part`s with CSS.
 The elements are:
 
-| Class                        | Description |
-| ---------------------------  | ----------- |
-| `circle-progress`            | The svg image. You can use this selector to scale the widget. E. g.: `.circle-progress {width: 200px; height: auto;}` |
-| `circle-progress-circle`     | The entire circle (SVG circle element) |
-| `circle-progress-value`      | The arc representing currently filled progress (SVG path element) |
-| `circle-progress-text`       | Text controlled by `textFormat` option (SVG text element) |
-| `circle-progress-text-value` | Current value text (SVG tspan element). Appears only for textFormat values of `horizontal`, `vertical`, `valueOnCircle` |
-| `circle-progress-text-max`   | Maximum value text (SVG tspan element). Appears only for textFormat values of `horizontal`, `vertical`, `valueOnCircle` |
+| Part                  | Description |
+| --------------------- | ----------- |
+| `::part(base)`        | The svg image. You can use this selector to scale the widget. E. g.: `circle-progress::part(base) {width: 200px; height: auto;}` |
+| `::part(circle)`      | The entire circle (SVG circle element) |
+| `::part(value)`       | The arc representing currently filled progress (SVG path element) |
+| `::part(text)`        | Text controlled by `textFormat` option (SVG text element) |
+| `::part(text-value)`  | Current value text (SVG tspan element). Appears only for textFormat values of `horizontal`, `vertical`, `valueOnCircle` |
+| `::part(text-max)`    | Maximum value text (SVG tspan element). Appears only for textFormat values of `horizontal`, `vertical`, `valueOnCircle` |
 
 You can use any SVG presentation attributes on these elements. Particularly useful are:
 `fill`, `stroke`, `stroke-width`, `stroke-linecap` properties. (See [examples][examples])
 
-The default options are stored in CircleProgress.defaults or jQuery.fn.circleProgress.defaults. The two are references to the same object. You can override them, so that all instances will be created with the overridden options.
+The default properties are stored in CircleProgress.defaults. You can override the values, so that all instances will be created with the overridden properties.
 
+## Usage with frameworks
+
+Since Circle Progress is a Custom Element, which is natively supported by all modern browsers, it can freely be used with any framework, just like a standard HTML element.
 
 ## Browser Support
-Chrome, Firefox, Safari, Edge and IE 11 are supported.
+
+Chrome, Firefox, Safari (starting with 13.0), Edge are supported.
+
+## Contributing
+
+If you noticed a bug or want to suggest a feature or an improvement, please do not hesitate to [open an issue](https://github.com/tigrr/circle-progress/issues/new).
+
+If you want to contribute code, please
+- fork the repository,
+- make your changes,
+- run `npm run check` and `npm test` to make sure everything is ok (you can run tests in watch mode `npm run test:watch`),
+- check the demo (index) and examples pages by running `npm start`, which will open the `docs` folder in your browser,
+- commit and create a pull request.
 
 
 ## License
@@ -206,8 +218,7 @@ Chrome, Firefox, Safari, Edge and IE 11 are supported.
 Licensed under ([the MIT License][license])
 
 
-[vanilla-min]: https://github.com/tigrr/circle-progress/raw/master/dist/circle-progress.min.js
-[jquery-min]: https://github.com/tigrr/circle-progress/raw/master/dist/jquery.circle-progress.min.js
+[vanilla-min]: https://unpkg.com/js-circle-progress/dist/circle-progress.min.js
 [site]: https://tigrr.github.io/circle-progress/
 [examples]: https://tigrr.github.io/circle-progress/examples.html
 [license]: https://github.com/tigrr/circle-progress/blob/master/LICENSE
