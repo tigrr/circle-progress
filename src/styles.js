@@ -1,5 +1,5 @@
 export default /* css */`
-	:host:not([hidden]) {
+	:host(:not([hidden])) {
 		display: inline-block;
 	}
 
@@ -28,5 +28,13 @@ export default /* css */`
 		font-size: 22px;
 		font-weight: bold;
 		fill: #ddd;
+	}
+
+	:host([text-format="vertical"]) .text-separator {
+		font-family: Arial, sans-serif !important;
+	}
+
+	:host(:not([text-format="vertical"])) .text {
+		dominant-baseline: middle;
 	}
 `

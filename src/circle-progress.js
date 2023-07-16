@@ -338,7 +338,6 @@ class CircleProgress extends CustomElement {
 
 	/**
 	 * Generate text representation of the values based on {@link CircleProgress#textFormat}
-	 * TODO: Remove offsets in em when support for IE is dropped
 	 */
 	#initText() {
 		const format = this.textFormat;
@@ -355,14 +354,11 @@ class CircleProgress extends CustomElement {
 			this.graph.textVal.attr({
 				x: 0,
 				y: 0,
-				dy: '0.4em',
 			});
 			this.graph.textMax.attr({
 				x: 50,
 				y: 50,
 			});
-			// IE
-			if(!this.graph.text.el.hasAttribute('dominant-baseline')) this.graph.textMax.attr('dy', '0.4em');
 			break;
 
 		case 'horizontal':
@@ -370,16 +366,10 @@ class CircleProgress extends CustomElement {
 			break;
 
 		case 'vertical':
-			if(this.graph.text.el.hasAttribute('dominant-baseline')) this.graph.text.attr('dominant-baseline', 'text-after-edge');
-			this.graph.textVal.attr({x: 50, dy: '-0.2em'});
-			this.graph.textSeparator.attr({x: 50, dy: '0.1em', "font-family": "Arial, sans-serif"}).content('___');
+			this.graph.textVal.attr({x: 50, dy: '-0.25em'});
+			this.graph.textSeparator.attr({x: 50, dy: '0.1em'}).content('___');
 			this.graph.textMax.attr({x: 50, dy: '1.2em'});
 			break;
-		}
-		if(format !== 'vertical') {
-			if(this.graph.text.el.hasAttribute('dominant-baseline')) this.graph.text.attr('dominant-baseline', 'central');
-			// IE
-			else this.graph.text.attr('dy', '0.4em');
 		}
 	}
 
