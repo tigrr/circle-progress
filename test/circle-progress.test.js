@@ -23,10 +23,11 @@ describe('Circle Progress', function() {
 		cp.animation = 'none'
 	})
 
-	it('should add aria- properties on the first element in the shadow root', function() {
+	it('should add aria- properties on the first element in the shadow root', async function() {
 		cp.min = -1
 		cp.max = 9
 		cp.value = 5.3
+		await this.updateComplete
 		expect(cp.shadowRoot?.querySelector('.base')?.getAttribute('aria-valuemin')).to.equal('-1')
 		expect(cp.shadowRoot?.querySelector('.base')?.getAttribute('aria-valuemax')).to.equal('9')
 		expect(cp.shadowRoot?.querySelector('.base')?.getAttribute('aria-valuenow')).to.equal('5.3')
@@ -60,24 +61,33 @@ describe('Circle Progress', function() {
 		expect(cp.max).to.equal(10)
 	})
 
+	it('should update the constrains when setting min / max and value together', function() {
+		cp.min = 0
+		cp.max = 1
+		cp.value = 5
+		cp.max = 10
+		expect(cp.value).to.equal(5)
+		expect(cp.max).to.equal(10)
+	})
+
 	it('can set negative min and max and constrain value between them', function() {
 		cp.min = -10
 		cp.max = 0
 		expect(cp.min).to.equal(-10)
 		expect(cp.max).to.equal(0)
 		cp.max = -11
-		expect(cp.max).to.equal(0)
+		expect(cp.max).to.equal(-10)
+		cp.max = 0
 		cp.value = -11
 		expect(cp.value).to.equal(-10)
 		cp.value = 1
 		expect(cp.value).to.equal(0)
 	})
 
-	it('does not accept min greater than max and max less than min', function() {
-		cp.min = 2
-		cp.max = 10
+	it('should constrain min if it is greater than max and max if it is less than min', function() {
 		cp.min = 11
-		expect(cp.min).to.equal(2)
+		cp.max = 10
+		expect(cp.min).to.equal(10)
 		cp.max = 1
 		expect(cp.max).to.equal(10)
 	})
@@ -153,6 +163,7 @@ describe('Circle Progress', function() {
 	it('should reflect decimal values in text both when animation is on and off', async function() {
 		cp.textFormat = 'value'
 		cp.value = 0.6
+		await this.updateComplete
 		expect(+getText(cp)).to.equal(0.6)
 		cp.animation = 'easeInOutCubic'
 		cp.value = 0.7
@@ -160,10 +171,12 @@ describe('Circle Progress', function() {
 		expect(+getText(cp)).to.equal(0.7)
 	})
 
-	it('goes clockwise and anticlockwise', function() {
+	it('goes clockwise and anticlockwise', async function() {
 		cp.anticlockwise = true
+		await this.updateComplete
 		expect(cp.shadowRoot?.querySelector('.value')?.getAttribute('d')).to.match(/^M (?:[\d.]+ ){2}A (?:[\d.]+ ){4}0/)
 		cp.anticlockwise = false
+		await this.updateComplete
 		expect(cp.shadowRoot?.querySelector('.value')?.getAttribute('d')).to.match(/^M (?:[\d.]+ ){2}A (?:[\d.]+ ){4}1/)
 	})
 
@@ -312,6 +325,7 @@ describe('Circle Progress', function() {
 	it('should animate for the number of milliseconds specified in animationDuration', async function() {
 		cp.animation = 'none'
 		cp.value = 0
+		await cp.updateComplete
 		cp.animation = 'linear'
 		cp.animationDuration = 1000
 		cp.value = 10
@@ -323,10 +337,11 @@ describe('Circle Progress', function() {
 		expect(+getText(cp)).to.equal(10)
 	})
 
-	it('should display indeterminateText as value text when in indeterminate state', function() {
+	it('should display indeterminateText as value text when in indeterminate state', async function() {
 		const cp = /** @type {import('../src/circle-progress').default} */ (document.createElement('circle-progress'))
 		cp.textFormat = 'value'
 		cp.indeterminateText = '#%'
+		await this.updateComplete
 		expect(getText(cp)).to.equal('#%')
 	})
 })

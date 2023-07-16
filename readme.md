@@ -173,6 +173,19 @@ The predefined animation easing functions:
 | easeOutCirc    | Circular easing out |
 | easeInOutCirc  | Circular easing in/out |
 
+## Other properties and methods
+
+### `updateComplete`
+
+A promise that resolves when the element has finished updating.
+
+```js
+circleProgress.value = 50
+circleProgress.max = 100
+await circleProgress.updateComplete
+// Do something when the update is complete
+```
+
 ## Styling
 
 To customize widget's appearance, you can style its underlying SVG elements which are exposed as `part`s with CSS.

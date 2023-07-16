@@ -10,6 +10,8 @@ import animator, {
 import {polarToCartesian, makeSectorPath} from './util.js';
 import styles from './styles.js';
 
+const ariaAttrs = {value: 'aria-valuenow', min: 'aria-valuemin', max: 'aria-valuemax'};
+
 
 /**
  * Create a new Circle Progress bar
@@ -122,7 +124,7 @@ class CircleProgress extends CustomElement {
 				(descriptors, prop) => {
 					descriptors[prop] = {
 						get() {
-							return this.#attrs[prop];
+							return this.#get(prop);
 						},
 						set(val) {
 							this.attr(prop, val);
@@ -170,13 +172,11 @@ class CircleProgress extends CustomElement {
 		this.#initText();
 		Object.keys(CircleProgress.props)
 			.forEach(key => key in opts && this.#set(key, opts[key]));
-		this.updateGraph()
 	}
 
 	// Called from CustomElement whenever attribute is changed
 	attributeUpdated(name, newValue) {
 		this.#set(name, newValue)
-		this.updateGraph()
 	}
 
 	#attrs = {}
@@ -194,7 +194,7 @@ class CircleProgress extends CustomElement {
 
 		if(typeof attrs === 'string') {
 			if(arguments.length === 1) {
-				return this.#attrs[attrs];
+				return this.#get(attrs);
 			}
 			attrs = [[attrs, arguments[1]]];
 		}
@@ -203,14 +203,17 @@ class CircleProgress extends CustomElement {
 			attrs = Object.keys(attrs).map(key => [key, attrs[key]]);
 		}
 
-		attrs.forEach(([key, value]) => {
-			if (this.#set(key, value) === false) {
-				return this;
-			}
-			this.reflectPropToAttribute(key);
-		});
-		this.updateGraph();
+		attrs.forEach(([key, value]) => this.#set(key, value));
 		return this;
+	}
+
+	/**
+	 * Get property value
+	 * Flushes pending updates.
+	 */
+	#get(key) {
+		this.#flushBatch();
+		return this.#attrs[key];
 	}
 
 
@@ -221,35 +224,76 @@ class CircleProgress extends CustomElement {
 	 * @return {false|void} false if the value is the same as the current one, void otherwise
 	 */
 	#set(key, val) {
-		let ariaAttrs = {value: 'aria-valuenow', min: 'aria-valuemin', max: 'aria-valuemax'},
-			circleThickness;
-
 		val = this.#formatValue(key, val);
-
 		if(val === undefined) throw new TypeError(`Failed to set the ${key} property on CircleProgress: The provided value is non-finite.`);
-		if(this.#attrs[key] === val) return false;
-		if(key === 'min' && val >= this.max) return;
-		if(key === 'max' && val <= this.min) return;
-		if(key === 'value' && val !== undefined && !this.unconstrained) {
-			if(this.min != null && val < this.min) val = this.min;
-			if(this.max != null && val > this.max) val = this.max;
+		this.#scheduleUpdate(key, val);
+	}
+
+	/**
+	 * Properties batched for update
+	 */
+	#batch = null;
+
+	/**
+	 * A promise that resolves when the element has finished updating
+	 */
+	updateComplete = null;
+
+	/**
+	 * Schedule an update of a property on microtask level
+	 * @param  {string} key Property name
+	 * @param  {*}      val Property value
+	 */
+	#scheduleUpdate(key, val) {
+		if(!this.#batch) {
+			this.#batch = {};
+			this.updateComplete = Promise.resolve().then(() => this.#flushBatch());
+		}
+		this.#batch[key] = val;
+	}
+
+	#flushBatch() {
+		if (!this.#batch) {
+			return;
+		}
+		const batch = this.#batch;
+		this.#batch = null;
+
+		let min = batch.min ?? this.#attrs.min;
+		let max = batch.max ?? this.#attrs.max;
+
+		if('min' in batch && batch.min >= max) {
+			min = batch.min = max;
+		}
+		if('max' in batch && batch.max <= min) {
+			max = batch.max = min;
+		}
+		if('value' in batch && !(batch.unconstrained ?? this.#attrs.unconstrained)) {
+			if(min != null && batch.value < min) batch.value = min;
+			if(max != null && batch.value > max) batch.value = max;
 		}
 
-		this.#attrs[key] = val;
-
-		if(key in ariaAttrs) {
-			if(val !== undefined) this.graph.paper.svg.setAttribute(ariaAttrs[key], val);
-			else this.graph.paper.svg.removeAttribute(ariaAttrs[key]);
+		for (const [key, val] of Object.entries(batch)) {
+			if(this.#attrs[key] === val) {
+				continue;
+			}
+			this.#attrs[key] = val;
+			if(key in ariaAttrs) {
+				if(val !== undefined) this.graph.paper.svg.setAttribute(ariaAttrs[key], val);
+				else this.graph.paper.svg.removeAttribute(ariaAttrs[key]);
+			}
+			if(['min', 'max', 'unconstrained'].includes(key) && (this.value > this.max || this.value < this.min)) {
+				this.value = Math.min(this.max, Math.max(this.min, this.value));
+			}
+			if(key === 'textFormat') {
+				this.#initText();
+				const circleThickness = val === 'valueOnCircle' ? 16 : 8;
+				this.graph.sector.attr('stroke-width', circleThickness);
+				this.graph.circle.attr('stroke-width', circleThickness);
+			}
+			this.reflectPropToAttribute(key);
 		}
-		if(['min', 'max', 'unconstrained'].includes(key) && (this.value > this.max || this.value < this.min)) {
-			this.value = Math.min(this.max, Math.max(this.min, this.value));
-		}
-		if(key === 'textFormat') {
-			this.#initText();
-			circleThickness = val === 'valueOnCircle' ? 16 : 8;
-			this.graph.sector.attr('stroke-width', circleThickness);
-			this.graph.circle.attr('stroke-width', circleThickness);
-		}
+		this.updateGraph();
 	}
 
 
