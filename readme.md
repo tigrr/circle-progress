@@ -211,7 +211,7 @@ Since Circle Progress is a Custom Element, which is natively supported by all mo
 
 ## Browser Support
 
-Chrome, Firefox, Safari (starting with version 15), Edge are supported.
+Chrome, Firefox, Safari (starting with version 14), Edge are supported.
 
 ## Contributing
 
