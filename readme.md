@@ -7,21 +7,24 @@
 See [examples][examples] or go to the [project site][site]
 
 ## Circle Progress v1 is out! 🚀
-*New users — skip to [Getting Started](#getting-started) section below.*
 
 There's been a major rewrite of Circle Progress. The new version is a [web component](https://developer.mozilla.org/en-US/docs/Web/API/Web_components) (custom element), which can be used directly in HTML just like any native element. It can also be used programmatically in JavaScript.
 
 The new version is not entirely backwards compatible with the old one. If you need the old version, you can still find it in the [v0 branch](https://github.com/tigrr/circle-progress/tree/v0).
 
-This version is currently in alpha. Any feedback is much appreciated.
+This version is currently in beta. Any feedback is much appreciated.
 
 ### Breaking changes since v0
+
+*New users — skip to [Getting Started](#getting-started) section below.*
+
 - Internet Explorer and Safari below version 14 are no longer supported.
 - The jQuery variant of the library is no longer provided.
 - The library is only shipped as an ES module.
 - The `clockwise` and `constrain` properties have been revised to `anticlockwise` and `unconstrained` correspondingly, which have the opposite meanings and are both `false` by default.
 - Rather than using classes to style elements inside Circle Progress, such as `.circle-progress-circle`, `.circle-progress-value`, `.circle-progress-text`, you can now use the [`::part()` CSS selector](https://developer.mozilla.org/en-US/docs/Web/CSS/::part), e. g. `circle-progress::part(circle)`, `circle-progress::part(value)`, `circle-progress::part(text)`. See [Styling](#styling) section below or check the [examples][examples] for details.
 - When passing a string for value, min, max or startAngle, it is now converted to number with rather than parse as float. This means you cannot pass it strings that have anything other than valid number characters. On the other hand strings which have numbers represented in any type of notation, such as scientific `1.2e7`, hexadecimal (0x1b4) or octal (0o10) are now properly converted. When making a property assignment (not attribute) you are advised to always pass numbers as numbers, not strings.
+- All consequent property updates are batched together and applied at once, whether set through the `attr` method or as property assignments. This means that if you set multiple properties at once, the constraints (such as keeping `value` between `min` and `max`) will be applied on the new values and the component will only be updated once, which is more efficient. Once you set the properties, you can subscribe to the update if you need by awaiting the `circleProgress.updateComplete` Promise.
 
 What hasn't changed?
 - All the public properties and methods are the same (except for those mentioned above).
@@ -35,7 +38,7 @@ Keep on reading for more details.
 
 ### Using npm
 
-Navigate to your project directory and install the alpha version of the `js-circle-progress` module:
+Navigate to your project directory and install the `js-circle-progress` module:
 ```shell
 $ npm install --save js-circle-progress
 ```
@@ -72,7 +75,7 @@ Either way you get the same `CircleProgress` element.
 
 ### Manually downloading the script
 
-Download the minified [production alpha version][vanilla-min]
+Download the minified [production version][vanilla-min]
 
 Given you placed the downloaded file in the same folder as your HTML file, in your HTML:
 ```html
