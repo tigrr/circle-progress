@@ -1,6 +1,6 @@
 # Circle Progress
 
-> Lightweight (less than 4kB minified and gzipped), responsive, accessible, animated, stylable with CSS circular progress bar web component.
+> Lightweight (less than 5kB minified and gzipped), responsive, accessible, animated, stylable with CSS circular progress bar web component.
 
 ![](https://i.imgur.com/gpxlBmm.png)
 
@@ -88,7 +88,7 @@ Given you placed the downloaded file in the same folder as your HTML file, in yo
 
 In your HTML:
 ```html
-<script src="https://unpkg.com/js-circle-progress/dist/circle-progress.min.js" type="module"></script>
+<script src="https://cdn.jsdelivr.net/npm/js-circle-progress/dist/circle-progress.min.js" type="module"></script>
 
 <circle-progress value="50" max="100"></circle-progress>
 ```
@@ -234,7 +234,7 @@ If you want to contribute code, please
 Licensed under ([the MIT License][license])
 
 
-[vanilla-min]: https://unpkg.com/js-circle-progress/dist/circle-progress.min.js
+[vanilla-min]: https://cdn.jsdelivr.net/npm/js-circle-progress/dist/circle-progress.min.js
 [site]: https://tigrr.github.io/circle-progress/
 [examples]: https://tigrr.github.io/circle-progress/examples.html
 [license]: https://github.com/tigrr/circle-progress/blob/master/LICENSE
