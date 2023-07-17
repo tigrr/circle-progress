@@ -414,10 +414,12 @@ class CircleProgress extends CustomElement {
 			this.graph.textVal.attr({
 				x: 0,
 				y: 0,
+				dy: '0.4em',
 			});
 			this.graph.textMax.attr({
 				x: 50,
 				y: 50,
+				dy: '0.4em',
 			});
 			break;
 
@@ -431,6 +433,7 @@ class CircleProgress extends CustomElement {
 			this.graph.textMax.attr({x: 50, dy: '1.2em'});
 			break;
 		}
+		this.graph.text.attr('dy', format === 'vertical' ? '' : '0.4em');
 	}
 
 	/**

@@ -37,7 +37,7 @@ Keep on reading for more details.
 
 Navigate to your project directory and install the alpha version of the `js-circle-progress` module:
 ```shell
-$ npm install --save js-circle-progress@latest
+$ npm install --save js-circle-progress
 ```
 
 Import the module anywhere in your application:
@@ -85,7 +85,7 @@ Given you placed the downloaded file in the same folder as your HTML file, in yo
 
 In your HTML:
 ```html
-<script src="https://unpkg.com/js-circle-progress@latest/dist/circle-progress.min.js" type="module"></script>
+<script src="https://unpkg.com/js-circle-progress/dist/circle-progress.min.js" type="module"></script>
 
 <circle-progress value="50" max="100"></circle-progress>
 ```
@@ -211,7 +211,7 @@ Since Circle Progress is a Custom Element, which is natively supported by all mo
 
 ## Browser Support
 
-Chrome, Firefox, Safari (starting with 13.0), Edge are supported.
+Chrome, Firefox, Safari (starting with version 15), Edge are supported.
 
 ## Contributing
 
@@ -231,7 +231,7 @@ If you want to contribute code, please
 Licensed under ([the MIT License][license])
 
 
-[vanilla-min]: https://unpkg.com/js-circle-progress@latest/dist/circle-progress.min.js
+[vanilla-min]: https://unpkg.com/js-circle-progress/dist/circle-progress.min.js
 [site]: https://tigrr.github.io/circle-progress/
 [examples]: https://tigrr.github.io/circle-progress/examples.html
 [license]: https://github.com/tigrr/circle-progress/blob/master/LICENSE

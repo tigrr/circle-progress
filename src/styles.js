@@ -33,8 +33,4 @@ export default /* css */`
 	:host([text-format="vertical"]) .text-separator {
 		font-family: Arial, sans-serif !important;
 	}
-
-	:host(:not([text-format="vertical"])) .text {
-		dominant-baseline: middle;
-	}
 `
