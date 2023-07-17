@@ -1,101 +1,90 @@
-'use strict';
+// Examples
+/**
+ * @type {HTMLTemplateElement|null}
+ */
+const exampleCodeTemplate = document.querySelector('#example-code-block-template')
+/**
+ * @type {HTMLTemplateElement|null}
+ */
+const exampleControlsTemplate = document.querySelector('#example-controls-template')
 
-// IE11 polyfills
-if (!Element.prototype.matches)
-	Element.prototype.matches = Element.prototype.msMatchesSelector ||
-		Element.prototype.webkitMatchesSelector;
-
-if (!Element.prototype.closest) {
-	Element.prototype.closest = function(s) {
-		var el = this;
-		if (!document.documentElement.contains(el)) return null;
-		do {
-			if (el.matches(s)) return el;
-			el = el.parentElement || el.parentNode;
-		} while (el !== null && el.nodeType === 1);
-		return null;
-	};
+if (!exampleCodeTemplate || !exampleControlsTemplate) {
+	throw new Error('Some example code templates are missing')
 }
 
+;[...document.querySelectorAll('.example')].forEach(function(exampleEl, i) {
+	/**
+	 * @type {import('../../src/circle-progress').default|null}
+	 */
+	const cp = exampleEl.querySelector('.progress')
 
-// Examples
-var options = [
-	{max: 100, value: 60, textFormat: 'percent'},
-	{max: 100, value: 60},
-	{max: 100, value: 60},
-	{max: 100, value: 60, textFormat: 'vertical'},
-	{max: 100, value: 60, textFormat: 'vertical'},
-	{max: 100, value: 60, textFormat: 'vertical'},
-	{max: 12, value: 9, textFormat: function(value, max) {
-		return value + ' dots';
-	}},
-	{max: 100, value: 40, textFormat: 'valueOnCircle'},
-	{max: 100, value: 40, textFormat: 'percent'},
-	{max: 100, value: 80, textFormat: 'percent'},
-	{max: 100, value: 60, textFormat: 'percent'},
-	{max: 100, value: 75, textFormat: 'percent', startAngle: -90},
-	{max: 4, value: 3, textFormat: 'vertical', clockwise: false, animation: 'none'},
-];
-
-options.forEach(function(opts, i) {
-	var exampleEl = document.querySelector('.example:nth-child(' + (i + 1) + ')');
-	new CircleProgress(exampleEl.querySelector('.progress'), opts);
-	// $(exampleEl.querySelector('.progress')).circleProgress(opts);
-	var optsStr = '{\n';
-	for(var name in opts) {
-		var value = opts[name];
-		if(typeof value === 'string') {
-			value = '\'' + value + '\'';
-		}
-		optsStr += '\t' + name + ': ' + value + ',\n';
+	if (!cp) {
+		throw new Error('No .progress element found in example')
 	}
-	optsStr += '}';
-	exampleEl.querySelector('.variant-vanilla code').innerText = 'new CircleProgress(\'.progress\', ' + optsStr + ');';
-	exampleEl.querySelector('.variant-jquery code').innerText = '$(\'.progress\').circleProgress(' + optsStr + ');';
-	exampleEl.querySelector('.example-figure').insertAdjacentHTML('beforeend', '<div class="controls">' +
-		'<label><input type="number" name="min" value="0">min</label>' +
-		'<label><input type="number" name="value" value="' + opts.value + '">value</label>' +
-		'<label><input type="number" name="max" value="' + opts.max + '">max</label>' +
-	'</div>');
-});
 
-
-
-
-hljs.initHighlightingOnLoad();
-
-Array.prototype.slice.call(document.querySelectorAll('.select-variant')).forEach(function(btn) {
-	btn.addEventListener('click', function(e) {
-		e.preventDefault();
-		if(this.dataset.variant === 'vanilla') {
-			document.body.classList.remove('show-variant-jquery');
-			document.body.classList.add('show-variant-vanilla');
-		} else {
-			document.body.classList.remove('show-variant-vanilla');
-			document.body.classList.add('show-variant-jquery');
+	if (i === 6) {
+		cp.textFormat = function(value) {
+			return value + ' dots'
 		}
-	});
-});
+	}
 
 
-Array.prototype.slice.call(document.querySelectorAll('.code')).forEach(function(el) {
+	const exampleBlock = /** @type {DocumentFragment} */ (exampleCodeTemplate.content.cloneNode(true))
+
+	const cpText = cp.outerHTML
+		.replace(/\s*class="progress"\s*/, ' ')
+		.replace(/=""/g, '')
+		.replace(/ /g, '\n\t')
+		.replace(/></g, '\n$&')
+	exampleBlock.querySelector('.code.html').textContent = cpText
+
+	const style = exampleEl.querySelector('style')
+	exampleBlock.querySelector('.code.css').textContent =
+		style.textContent
+			.trim()
+			.replace(/\n\t{4}/g, '\n') ||
+		'\n\n\n'
+	style.textContent = style.textContent.replace(/circle-progress/g, `.example:nth-of-type(${i + 1}) $&`)
+
+	exampleEl.querySelector('.example-figure').after(exampleBlock)
+
+
+	const controls = /** @type {DocumentFragment} */ (exampleControlsTemplate.content.cloneNode(true))
+	;/** @type {HTMLInputElement} */ (controls.querySelector('[name=value]')).value = cp.getAttribute('value')
+	;/** @type {HTMLInputElement} */ (controls.querySelector('[name=max]')).value = cp.getAttribute('max')
+	exampleEl.querySelector('.example-figure').append(controls)
+
+	exampleEl.querySelector('.controls').addEventListener(
+		'change',
+		/**
+		 * @param {Event} e
+		 */
+		function(e) {
+			const control = /** @type {HTMLInputElement} */ (e.target)
+			if(control.nodeName !== 'INPUT') {
+				return
+			}
+			cp[control.name] = control.value
+			;(/** @type {HTMLInputElement[]} */ ([...exampleEl.querySelectorAll('.controls input')])).forEach(function(input) {
+				input.value = cp[input.name]
+			})
+		}
+	)
+
+	// Make sure demo is loaded before custom elements have been defined and upgraded,
+	// since we want the raw html from circle-progress before any properties have been reflected to attributes
+	// @ts-ignore
+	import('https://cdn.jsdelivr.net/npm/js-circle-progress/dist/circle-progress.min.js')
+
+})
+
+;[...document.querySelectorAll('.copy-code-btn')].forEach(function(el) {
 	el.addEventListener('click', function() {
-		var r = document.createRange();
-		r.selectNode(this);
-		var s = document.getSelection();
-		s.empty();
-		s.addRange(r);
-	});
-});
+		const code = this.closest('.code-container').querySelector('.code').textContent
+		navigator.clipboard.writeText(code)
+	})
+})
 
 
-document.body.addEventListener('change', function(e) {
-	if(e.target.nodeName !== 'INPUT') return;
-	var key = e.target.name;
-	var exampleEl = e.target.closest('.example');
-	var cp = exampleEl.querySelector('.progress').circleProgress;
-	cp[key] = e.target.value;
-	Array.prototype.slice.call(exampleEl.querySelectorAll('.controls input')).forEach(function(input) {
-		input.value = cp[input.name];
-	});
-});
+// @ts-ignore
+hljs.initHighlightingOnLoad()

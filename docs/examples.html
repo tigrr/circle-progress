@@ -6,12 +6,13 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 	<title>Examples - Circle Progress</title>
-	<meta name="description" content="Circle Progress examples. Circle Progress is responsive, accessible, animated, stylable with CSS circular progress bar available as plain (vanilla) JavaScript and jQuery plugin.">
+	<meta name="description" content="Circle Progress examples. Circle Progress is responsive, accessible, animated, stylable with CSS circular progress bar web component.">
 
 	<link rel="shortcut icon" href="/favicon.ico">
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:900|Varela+Round|Dosis:300">
 	<link rel="stylesheet" href="css/monokai-sublime.css">
 	<link rel="stylesheet" href="css/style.css">
+	<link rel="stylesheet" href="css/examples.css">
 </head>
 <body>
 	<div class="container">
@@ -24,292 +25,286 @@
 		<div class="examples">
 		<div class="example">
 			<div class="example-figure">
-				<div class="progress progress-1"></div>
+				<circle-progress class="progress" max="100" value="60" text-format="percent"></circle-progress>
 			</div>
-			<h3><a class="select-variant" href="#vanilla" data-variant="vanilla">JS</a><span class="slash"> / </span><a class="select-variant" href="#jquery" data-variant="jquery">jQuery</a></h3>
-			<pre class="variant-vanilla"><code class="code js">new CircleProgress('.progress', {max: 100, value: 60, textFormat: 'percent'});</code></pre>
-			<pre class="variant-jquery"><code class="code js">$('.progress').circleProgress({max: 100, value: 60, textFormat: 'percent'});</code></pre>
-			<h3>CSS</h3>
-			<pre><code class="code css">.circle-progress-value {
-	stroke-width: 6px;
-	stroke: hsl(39, 100%, 50%);
-}
-.circle-progress-circle {
-	stroke-width: 6px;
-	stroke: hsl(39, 100%, 85%);
-}
-.circle-progress-text {
-	fill: hsl(39, 100%, 50%);
-}</code></pre>
+			<style>
+				circle-progress::part(value) {
+					stroke-width: 6px;
+					stroke: hsl(39, 100%, 50%);
+				}
+				circle-progress::part(circle) {
+					stroke-width: 6px;
+					stroke: hsl(39, 100%, 85%);
+				}
+				circle-progress::part(text) {
+					fill: hsl(39, 100%, 50%);
+				}
+			</style>
 		</div>
 
 		<div class="example">
 			<div class="example-figure">
-				<div class="progress progress-2"></div>
+				<circle-progress class="progress" max="100" value="60"></circle-progress>
 			</div>
-			<h3><a class="select-variant" href="#vanilla" data-variant="vanilla">JS</a><span class="slash"> / </span><a class="select-variant" href="#jquery" data-variant="jquery">jQuery</a></h3>
-			<pre class="variant-vanilla"><code class="code js">new CircleProgress('.progress', {max: 100, value: 60});</code></pre>
-			<pre class="variant-jquery"><code class="code js">$('.progress').circleProgress({max: 100, value: 60});</code></pre>
-			<h3>CSS</h3>
-			<pre><code class="code css">.circle-progress-value {
-	stroke-width: 6px;
-	stroke: hsl(320, 80%, 60%);
-	stroke-dasharray: 4 1;
-}
-.circle-progress-circle {
-	stroke-width: 6px;
-	stroke: #eee;
-}
-.circle-progress-text {
-	font-weight: bold;
-	fill: hsl(180, 80%, 47%);
-}</code></pre>
+			<style>
+				circle-progress::part(value) {
+					stroke-width: 6px;
+					stroke: hsl(320, 80%, 60%);
+					stroke-dasharray: 4 1;
+				}
+				circle-progress::part(circle) {
+					stroke-width: 6px;
+					stroke: #eee;
+				}
+				circle-progress::part(text) {
+					font-weight: bold;
+					fill: hsl(180, 80%, 47%);
+				}
+			</style>
 		</div>
 
 		<div class="example">
 			<div class="example-figure">
-				<div class="progress progress-3"></div>
+				<circle-progress class="progress" max="100" value="60"></circle-progress>
 			</div>
-			<h3><a class="select-variant" href="#vanilla" data-variant="vanilla">JS</a><span class="slash"> / </span><a class="select-variant" href="#jquery" data-variant="jquery">jQuery</a></h3>
-			<pre class="variant-vanilla"><code class="code js">new CircleProgress('.progress', {max: 100, value: 60});</code></pre>
-			<pre class="variant-jquery"><code class="code js">$('.progress').circleProgress({max: 100, value: 60});</code></pre>
-			<h3>CSS</h3>
-			<pre><code class="code css">.circle-progress-value {
-	stroke-width: 6px;
-	stroke: hsl(280, 90%, 50%);
-	stroke-linecap: round;
-}
-.circle-progress-circle {
-	stroke-width: 2px;
-}</code></pre>
+			<style>
+				circle-progress::part(value) {
+					stroke-width: 6px;
+					stroke: hsl(280, 90%, 50%);
+					stroke-linecap: round;
+				}
+				circle-progress::part(circle) {
+					stroke-width: 2px;
+				}
+			</style>
 		</div>
 
 		<div class="example">
 			<div class="example-figure">
-				<div class="progress progress-4"></div>
+				<circle-progress class="progress" max="100" value="60" text-format="vertical"></circle-progress>
 			</div>
-			<h3><a class="select-variant" href="#vanilla" data-variant="vanilla">JS</a><span class="slash"> / </span><a class="select-variant" href="#jquery" data-variant="jquery">jQuery</a></h3>
-			<pre class="variant-vanilla"><code class="code js">new CircleProgress('.progress', {max: 100, value: 60, textFormat: 'vertical'});</code></pre>
-			<pre class="variant-jquery"><code class="code js">$('.progress').circleProgress({max: 100, value: 60, textFormat: 'vertical'});</code></pre>
-			<h3>CSS</h3>
-			<pre><code class="code css">.circle-progress-value {
-	stroke-width: 50px;
-	stroke: hsl(160, 63%, 55%);
-}
-.circle-progress-circle {
-	stroke-width: 50px;
-	stroke: #999;
-}
-.circle-progress-text {
-	fill: white;
-}</code></pre>
+			<style>
+				circle-progress::part(value) {
+					stroke-width: 50px;
+					stroke: hsl(160, 63%, 55%);
+				}
+				circle-progress::part(circle) {
+					stroke-width: 50px;
+					stroke: #999;
+				}
+				circle-progress::part(text) {
+					fill: white;
+				}
+			</style>
 		</div>
 
 		<div class="example">
 			<div class="example-figure">
-				<div class="progress progress-5"></div>
+				<circle-progress class="progress" max="100" value="60" text-format="vertical"></circle-progress>
 			</div>
-			<h3><a class="select-variant" href="#vanilla" data-variant="vanilla">JS</a><span class="slash"> / </span><a class="select-variant" href="#jquery" data-variant="jquery">jQuery</a></h3>
-			<pre class="variant-vanilla"><code class="code js">new CircleProgress('.progress', {max: 100, value: 60, textFormat: 'vertical'});</code></pre>
-			<pre class="variant-jquery"><code class="code js">$('.progress').circleProgress({max: 100, value: 60, textFormat: 'vertical'});</code></pre>
-			<h3>CSS</h3>
-			<pre><code class="code css">.circle-progress-value {
-	stroke-width: 6px;
-	stroke: white;
-	stroke-linecap: round;
-}
-.circle-progress-circle {
-	stroke-width: 8px;
-	stroke: #888;
-}
-.circle-progress-text {
-	fill: #888;
-}</code></pre>
+			<style>
+				circle-progress::part(value) {
+					stroke-width: 6px;
+					stroke: white;
+					stroke-linecap: round;
+				}
+				circle-progress::part(circle) {
+					stroke-width: 8px;
+					stroke: #888;
+				}
+				circle-progress::part(text) {
+					fill: #888;
+				}
+			</style>
 		</div>
 
 		<div class="example">
 			<div class="example-figure">
-				<div class="progress progress-6"></div>
+				<circle-progress class="progress" max="100" value="60" text-format="vertical"></circle-progress>
 			</div>
-			<h3><a class="select-variant" href="#vanilla" data-variant="vanilla">JS</a><span class="slash"> / </span><a class="select-variant" href="#jquery" data-variant="jquery">jQuery</a></h3>
-			<pre class="variant-vanilla"><code class="code js">new CircleProgress('.progress', {max: 100, value: 60, textFormat: 'vertical'});</code></pre>
-			<pre class="variant-jquery"><code class="code js">$('.progress').circleProgress({max: 100, value: 60, textFormat: 'vertical'});</code></pre>
-			<h3>CSS</h3>
-			<pre><code class="code css">.circle-progress-value {
-	stroke-width: 50px;
-	stroke: hsl(100, 90%, 70%);
-}
-.circle-progress-circle {
-	stroke-width: 40px;
-	stroke: hsl(100, 15%, 60%);
-	fill: hsl(100, 15%, 60%);
-}
-.circle-progress-text {
-	fill: white;
-	font-weight: bold;
-}</code></pre>
+			<style>
+				circle-progress::part(value) {
+					stroke-width: 50px;
+					stroke: hsl(100, 90%, 70%);
+				}
+				circle-progress::part(circle) {
+					stroke-width: 40px;
+					stroke: hsl(100, 15%, 60%);
+					fill: hsl(100, 15%, 60%);
+				}
+				circle-progress::part(text) {
+					fill: white;
+					font-weight: bold;
+				}
+			</style>
 		</div>
 
 		<div class="example">
 			<div class="example-figure">
-				<div class="progress progress-7"></div>
+				<circle-progress class="progress" max="12" value="9" animation="none"></circle-progress>
 			</div>
-			<h3><a class="select-variant" href="#vanilla" data-variant="vanilla">JS</a><span class="slash"> / </span><a class="select-variant" href="#jquery" data-variant="jquery">jQuery</a></h3>
-			<pre class="variant-vanilla"><code class="code js">new CircleProgress('.progress', {max: 12, value: 9, textFormat: function(value, max) {return value + ' dots';}});</code></pre>
-			<pre class="variant-jquery"><code class="code js">$('.progress').circleProgress({max: 12, value: 9, textFormat: function(value, max) {return value + ' dots';}});</code></pre>
-			<h3>CSS</h3>
-			<pre><code class="code css">.circle-progress-value {
-	stroke-width: 11px;
-	stroke: aqua;
-	stroke-dasharray: 0 23.3;
-	stroke-linecap: round;
-}
-.progress[aria-valuenow="0"] .circle-progress-value {
-	display: none;
-}
-.circle-progress-circle {
-	stroke: transparent;
-}
-.circle-progress-text {
-	font-family: "Gotham rounded";
-	font-size: 13px;
-	fill: fuchsia;
-}</code></pre>
+			<style>
+				circle-progress::part(value) {
+					stroke-width: 11px;
+					stroke: aqua;
+					stroke-dasharray: 0 23.3;
+					stroke-linecap: round;
+				}
+				circle-progress[value="0"]::part(value) {
+					display: none;
+				}
+				circle-progress::part(circle) {
+					stroke: transparent;
+				}
+				circle-progress::part(text) {
+					font-family: "Varela Round", "Gotham rounded", sans-serif;
+					font-size: 13px;
+					font-weight: bold;
+					fill: fuchsia;
+				}
+			</style>
 		</div>
 
 		<div class="example">
 			<div class="example-figure">
-				<div class="progress progress-8"></div>
+				<circle-progress class="progress" max="100" value="40" text-format="valueOnCircle"></circle-progress>
 			</div>
-			<h3><a class="select-variant" href="#vanilla" data-variant="vanilla">JS</a><span class="slash"> / </span><a class="select-variant" href="#jquery" data-variant="jquery">jQuery</a></h3>
-			<pre class="variant-vanilla"><code class="code js">new CircleProgress('.progress', {max: 100, value: 40, textFormat: 'valueOnCircle'});</code></pre>
-			<pre class="variant-jquery"><code class="code js">$('.progress').circleProgress({max: 100, value: 40, textFormat: 'valueOnCircle'});</code></pre>
-			<h3>CSS</h3>
-			<pre><code class="code css">
+			<style>
 
-</code></pre>
+
+
+			</style>
 		</div>
 
 		<div class="example">
 			<div class="example-figure">
-				<div class="progress progress-9"></div>
+				<circle-progress class="progress" max="100" value="40" text-format="percent"></circle-progress>
 			</div>
-			<h3><a class="select-variant" href="#vanilla" data-variant="vanilla">JS</a><span class="slash"> / </span><a class="select-variant" href="#jquery" data-variant="jquery">jQuery</a></h3>
-			<pre class="variant-vanilla"><code class="code js">new CircleProgress('.progress', {max: 100, value: 40, textFormat: 'percent'});</code></pre>
-			<pre class="variant-jquery"><code class="code js">$('.progress').circleProgress({max: 100, value: 40, textFormat: 'percent'});</code></pre>
-			<h3>CSS</h3>
-			<pre><code class="code css">.circle-progress-value {
-	stroke-width: 12px;
-	stroke: hsl(210, 100%, 45%);
-}
-.circle-progress-circle {
-	stroke: white;
-	stroke-width: 22px;
-	fill: #666;
-}
-.circle-progress-text {
-	font-family: "Georgia";
-	font-size: 13px;
-	fill: white;
-}</code></pre>
+			<style>
+				circle-progress::part(value) {
+					stroke-width: 12px;
+					stroke: hsl(210, 100%, 45%);
+				}
+				circle-progress::part(circle) {
+					stroke: white;
+					stroke-width: 22px;
+					fill: #666;
+				}
+				circle-progress::part(text) {
+					font-family: "Georgia", serif;
+					font-size: 13px;
+					fill: white;
+				}
+			</style>
 		</div>
 
 		<div class="example">
 			<div class="example-figure">
-				<div class="progress progress-10"></div>
+				<circle-progress class="progress" max="100" value="80" text-format="percent"></circle-progress>
 			</div>
-			<h3><a class="select-variant" href="#vanilla" data-variant="vanilla">JS</a><span class="slash"> / </span><a class="select-variant" href="#jquery" data-variant="jquery">jQuery</a></h3>
-			<pre class="variant-vanilla"><code class="code js">new CircleProgress('.progress', {max: 100, value: 80, textFormat: 'percent'});</code></pre>
-			<pre class="variant-jquery"><code class="code js">$('.progress').circleProgress({max: 100, value: 80, textFormat: 'percent'});</code></pre>
-			<h3>CSS</h3>
-			<pre><code class="code css">.circle-progress-value {
-	stroke-width: 2px;
-	stroke: aquamarine;
-}
-.circle-progress-circle {
-	stroke: #ddd;
-	stroke-width: 2px;
-}
-.circle-progress-text {
-	font-family: "Georgia";
-	font-size: 13px;
-}</code></pre>
+			<style>
+				circle-progress::part(value) {
+					stroke-width: 2px;
+					stroke: aquamarine;
+				}
+				circle-progress::part(circle) {
+					stroke: #ddd;
+					stroke-width: 2px;
+				}
+				circle-progress::part(text) {
+					font-family: "Georgia", serif;
+					font-size: 13px;
+				}
+			</style>
 		</div>
 
 		<div class="example">
 			<div class="example-figure">
-				<div class="progress progress-11"></div>
+				<circle-progress class="progress" max="100" value="60" text-format="percent"></circle-progress>
 			</div>
-			<h3><a class="select-variant" href="#vanilla" data-variant="vanilla">JS</a><span class="slash"> / </span><a class="select-variant" href="#jquery" data-variant="jquery">jQuery</a></h3>
-			<pre class="variant-vanilla"><code class="code js">new CircleProgress('.progress', {max: 100, value: 60, textFormat: 'percent'});</code></pre>
-			<pre class="variant-jquery"><code class="code js">$('.progress').circleProgress({max: 100, value: 60, textFormat: 'percent'});</code></pre>
-			<h3>CSS</h3>
-			<pre><code class="code css">.circle-progress-value {
-	stroke-width: 6px;
-	stroke: hsl(100, 100%, 60%);
-	stroke-dasharray: 0.6 3;
-}
-.circle-progress-circle {
-	stroke-width: 6px;
-	stroke: #ddd;
-	stroke-dasharray: 0.6 3;
-	stroke-dashoffset: 1.6;
-}
-.circle-progress-text {
-	font-family: "Gotham Rounded Light";
-	fill: hsl(100, 81%, 55%);
-	font-size: 26px;
-}</code></pre>
+			<style>
+				circle-progress::part(value) {
+					stroke-width: 6px;
+					stroke: hsl(100, 100%, 60%);
+					stroke-dasharray: 0.6 3;
+				}
+				circle-progress::part(circle) {
+					stroke-width: 6px;
+					stroke: #ddd;
+					stroke-dasharray: 0.6 3;
+					stroke-dashoffset: 1.6;
+				}
+				circle-progress::part(text) {
+					font-family: "Dosis", "Varela Round", "Gotham Rounded Light", sans-serif;
+					fill: hsl(100, 81%, 55%);
+					font-size: 26px;
+				}
+			</style>
 		</div>
 
 		<div class="example">
 			<div class="example-figure">
-				<div class="progress progress-12"></div>
+				<circle-progress class="progress" max="100" value="75" text-format="percent" start-angle="-90"></circle-progress>
 			</div>
-			<h3><a class="select-variant" href="#vanilla" data-variant="vanilla">JS</a><span class="slash"> / </span><a class="select-variant" href="#jquery" data-variant="jquery">jQuery</a></h3>
-			<pre class="variant-vanilla"><code class="code js">new CircleProgress('.progress', {max: 100, value: 75, textFormat: 'percent', startAngle: -90});</code></pre>
-			<pre class="variant-jquery"><code class="code js">$('.progress').circleProgress({max: 100, value: 75, textFormat: 'percent', startAngle: -90});</code></pre>
-			<h3>CSS</h3>
-			<pre><code class="code css">.circle-progress-value {
-	stroke-width: 12px;
-	stroke: darkmagenta;
-}
-.circle-progress-circle {
-	stroke: white;
-	stroke-width: 11px;
-	fill: #666;
-}
-.circle-progress-text {
-	font-family: "Georgia";
-	font-size: 13px;
-	fill: white;
-}</code></pre>
+			<style>
+				circle-progress::part(value) {
+					stroke-width: 12px;
+					stroke: darkmagenta;
+				}
+				circle-progress::part(circle) {
+					stroke: white;
+					stroke-width: 11px;
+					fill: #666;
+				}
+				circle-progress::part(text) {
+					font-family: "Georgia", serif;
+					font-size: 13px;
+					fill: white;
+				}
+			</style>
 		</div>
 
 		<div class="example">
 			<div class="example-figure">
-				<div class="progress progress-13"></div>
+				<circle-progress class="progress" max="4" value="3" text-format="vertical" anticlockwise animation="none"></circle-progress>
 			</div>
-			<h3><a class="select-variant" href="#vanilla" data-variant="vanilla">JS</a><span class="slash"> / </span><a class="select-variant" href="#jquery" data-variant="jquery">jQuery</a></h3>
-			<pre class="variant-vanilla"><code class="code js">new CircleProgress('.progress', {max: 4, value: 3, textFormat: 'vertical', clockwise: false, animation: 'none'});</code></pre>
-			<pre class="variant-jquery"><code class="code js">$('.progress').circleProgress({max: 4, value: 3, textFormat: 'vertical', clockwise: false, animation: 'none'});</code></pre>
-			<h3>CSS</h3>
-			<pre><code class="code css">.circle-progress-value {
-	stroke-width: 25px;
-	stroke: hsl(210, 100%, 45%);
-	stroke-dasharray: 58 1;
-}
-.circle-progress-circle {
-	stroke: hsl(210, 100%, 85%);
-	stroke-width: 25px;
-	fill: hsl(210, 100%, 85%);
-}
-.circle-progress-text {
-	font-family: "Gotham";
-	font-size: 16px;
-	fill: hsl(210, 100%, 45%);
-}</code></pre>
+			<style>
+				circle-progress::part(value) {
+					stroke-width: 25px;
+					stroke: hsl(210, 100%, 45%);
+					stroke-dasharray: 58 1;
+				}
+				circle-progress::part(circle) {
+					stroke: hsl(210, 100%, 85%);
+					stroke-width: 25px;
+					fill: hsl(210, 100%, 85%);
+				}
+				circle-progress::part(text) {
+					font-family: "Montserrat", "Gotham", sans-serif;
+					font-size: 16px;
+					fill: hsl(210, 100%, 45%);
+				}
+			</style>
 		</div>
+
+		<!-- Example templates -->
+		<template id="example-code-block-template">
+			<div class="example-code-block">
+				<h3>HTML</h3>
+				<pre class="code-container"><code class="code html"></code><button class="copy-code-btn"><img class="icon" src="img/clipboard.svg" alt="Copy HTML code"></button></pre>
+				<h3>CSS</h3>
+				<pre class="code-container"><code class="code css"></code><button class="copy-code-btn"><img class="icon" src="img/clipboard.svg" alt="Copy CSS code"></button></pre>
+			</div>
+		</template>
+
+		<template id="example-controls-template">
+			<div class="controls">
+				<label><input type="number" name="min" value="0">min</label>
+				<label><input type="number" name="value">value</label>
+				<label><input type="number" name="max">max</label>
+			</div>
+		</template>
+
 		</div><!-- .examples -->
 
 		<footer class="site-footer">
@@ -318,18 +313,7 @@
 	</div><!-- .container -->
 
 
-	<!-- <script src="../lib/jquery-3.3.1.js"></script> -->
-	<!-- <script src="../lib/jquery.ui.widget.js"></script> -->
 	<script src="js/highlight.pack.js"></script>
-
-	<!-- <script src="../src/innersvg.js"></script>
-	<script src="../src/svgpaper.js"></script>
-	<script src="../src/animator.js"></script>
-	<script src="../src/circle-progress.js"></script> -->
-
-	<script src="js/circle-progress.js"></script>
-	<!-- <script src="//github.com/tigrr/circle-progress/raw/master/dist/circle-progress.js"></script> -->
-	<!-- <script src="../dist/jquery.circle-progress.js"></script> -->
-	<script src="js/demo.js"></script>
+	<script src="js/demo.js" type="module"></script>
 </body>
 </html>

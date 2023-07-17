@@ -1,0 +1,130 @@
+.about {
+	padding: 25px;
+	background: hsl(0, 0%, 22%);
+	color: hsl(0, 0%, 92%);
+	border-radius: 0 0 3px 3px;
+}
+
+.about a {
+	color: hsl(210, 100%, 60%);
+}
+
+.about a:hover,
+.about a:focus {
+	color: hsl(240, 90%, 80%);
+}
+
+.about h1 {
+	text-align: center;
+}
+
+
+.example-figure {
+	width: -moz-min-content;
+	width: min-content;
+	margin: auto;
+}
+
+@media screen and (min-width: 50rem) {
+	.example-figure {
+		padding-top: 2.4rem;
+		padding-right: 80px;
+	}
+
+	.example-code-block {
+		flex: 1;
+	}
+}
+
+
+circle-progress::part(base) {
+	width: 300px;
+	height: 300px;
+}
+
+
+/* Circle progress controls */
+.controls {
+	display: flex;
+	justify-content: space-between;
+	margin-top: 20px;
+}
+
+.controls input {
+	display: block;
+	width: 4em;
+	padding: .3em .6em;
+	text-align: left;
+	background: hsl(0, 0%, 85%);
+	border: 0;
+	font-size: .85em;
+}
+
+.controls input:focus {
+	background: hsl(0, 0%, 70%);
+	outline: none;
+}
+
+.controls label {
+	font-weight: bold;
+	color: hsl(0, 0%, 40%);
+}
+
+.controls label:nth-of-type(2) {
+	text-align: center;
+}
+
+.controls label:last-of-type {
+	text-align: right;
+}
+
+
+.example h3 {
+	font-size: 1.1rem;
+	line-height: 1.4rem;
+	margin: 1rem 0 0;
+	color: hsl(14, 80%, 50%);
+}
+
+
+/* Code */
+.code-container {
+	position: relative;
+}
+
+.code {
+	background: hsl(0, 0%, 22%);
+	-moz-tab-size: 4;
+	tab-size: 4;
+}
+
+.copy-code-btn {
+	position: absolute;
+	right: 10px;
+	top: 10px;
+	width: 1.8em;
+	height: 1.8em;
+	display: grid;
+	place-items: center;
+	background: none;
+	border: none;
+	padding: 0;
+	opacity: 0;
+	transition: opacity .3s;
+	cursor: pointer;
+}
+
+.code-container:hover .copy-code-btn {
+	opacity: .4;
+}
+
+.copy-code-btn.copy-code-btn:is(:hover, :focus-visible) {
+	opacity: 1;
+}
+
+.icon {
+	width: 1.2em;
+	height: 1.2em;
+	fill: hsl(0, 0%, 92%);
+	vertical-align: middle;
+}

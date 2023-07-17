@@ -1,6 +1,6 @@
 {
 	"name": "js-circle-progress",
-	"version": "0.2.4",
+	"version": "1.0.0-beta.0",
 	"description": "Responsive, accessible, animated, stylable with CSS circular progress bar available as plain (vanilla) JS and jQuery plugin.",
 	"keywords": [
 		"progressbar",
@@ -20,21 +20,26 @@
 		"url": "https://github.com/tigrr/circle-progress/issues"
 	},
 	"license": "MIT",
+	"type": "module",
 	"main": "dist/circle-progress.js",
+	"types": "dist/circle-progress.d.ts",
 	"scripts": {
-		"build": "grunt build"
+		"start": "web-dev-server --open docs/examples.html --watch",
+		"build": "rollup --config rollup.config.js && tsc -p tsconfig.prod.json",
+		"test": "web-test-runner",
+		"test:watch": "web-test-runner --watch",
+		"check": "tsc --noEmit",
+		"bump": "npm version --preid alpha --git-tag-version false",
+		"prepublishOnly": "npm run build && npm run check && npm run test"
 	},
 	"devDependencies": {
-		"@babel/core": "^7.11.4",
-		"@babel/preset-env": "^7.11.0",
-		"grunt": "^1.3.0",
-		"grunt-babel": "^8.0.0",
-		"grunt-contrib-clean": "^2.0.0",
-		"grunt-contrib-concat": "^1.0.1",
-		"grunt-contrib-copy": "^1.0.0",
-		"grunt-contrib-uglify": "^5.0.0",
-		"grunt-contrib-watch": "^1.1.0",
-		"load-grunt-tasks": "^5.1.0",
-		"time-grunt": "^2.0.0"
+		"@esm-bundle/chai": "^4.3.4-fix.0",
+		"@rollup/plugin-terser": "^0.4.3",
+		"@web/dev-server": "^0.3.0",
+		"@web/dev-server-import-maps": "^0.1.1",
+		"@web/test-runner": "^0.17.0",
+		"@web/test-runner-playwright": "^0.10.1",
+		"rollup": "^3.26.2",
+		"typescript": "^5.1.6"
 	}
 }

@@ -1,17 +1,16 @@
-'use strict';
-
-
 /**
  * Change any value using an animation easing function.
- * @param  {string}   Easing function.
- * @param  {number}   The initial value
- * @param  {number}   Change in value
- * @param  {number}   Animation duration
- * @param  {Function} Callback to be called on each iteration. The callback is passed one argument: current value.
+ * @param  {string}   easing Easing function.
+ * @param  {number}   startValue The initial value
+ * @param  {number}   valueChange Change in value
+ * @param  {number}   dur Animation duration
+ * @param  {Function} cb Callback to be called on each iteration. The callback is passed one argument: current value.
+ * @return {Object}   Object with cancel method to stop the animation.
  */
 const animator = function(easing, startValue, valueChange, dur, cb) {
-	const easeFunc = typeof easing === 'string' ? animator.easings[easing] : easing;
+	const easeFunc = typeof easing === 'string' ? easings[easing] : easing;
 	let tStart;
+	let animHandle;
 
 	const frame = function(t) {
 		if(!tStart) tStart = t;
@@ -19,12 +18,20 @@ const animator = function(easing, startValue, valueChange, dur, cb) {
 		t = Math.min(t, dur);
 		const curVal = easeFunc(t, startValue, valueChange, dur);
 		cb(curVal);
-		if(t < dur) requestAnimationFrame(frame);
+		if(t < dur) animHandle = requestAnimationFrame(frame);
 		else cb(startValue + valueChange);
 	};
 
-	requestAnimationFrame(frame);
+	animHandle = requestAnimationFrame(frame);
+
+	return {
+		cancel: () => {
+			cancelAnimationFrame(animHandle);
+		}
+	}
 };
+
+export default animator;
 
 
 /**
@@ -32,7 +39,7 @@ const animator = function(easing, startValue, valueChange, dur, cb) {
  * Easing functions from http://gizma.com/easing/
  * @type {Object}
  */
-animator.easings = {
+export const easings = {
 	linear:  function (t, b, c, d) {
 		return c*t/d + b;
 	},
