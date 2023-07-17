@@ -11,7 +11,7 @@ See [examples][examples] or go to the [project site][site]
 
 There's been a major rewrite of Circle Progress. The new version is a [web component](https://developer.mozilla.org/en-US/docs/Web/API/Web_components) (custom element), which can be used directly in HTML just like any native element. It can also be used programmatically in JavaScript.
 
-The new version is not entirely backwards compatible with the old one. If you need the old version, you can still find it in the [v0 branch](https://github.com/tigrr/circle-progress/tree/web-components).
+The new version is not entirely backwards compatible with the old one. If you need the old version, you can still find it in the [v0 branch](https://github.com/tigrr/circle-progress/tree/v0).
 
 This version is currently in alpha. Any feedback is much appreciated.
 
@@ -35,9 +35,9 @@ Keep on reading for more details.
 
 ### Using npm
 
-Navigate to your project directory and install the `js-circle-progress` module:
+Navigate to your project directory and install the alpha version of the `js-circle-progress` module:
 ```shell
-$ npm install --save js-circle-progress@alhpa.0
+$ npm install --save js-circle-progress@latest
 ```
 
 Import the module anywhere in your application:
@@ -72,7 +72,7 @@ Either way you get the same `CircleProgress` element.
 
 ### Manually downloading the script
 
-Download the minified [production version][vanilla-min]
+Download the minified [production alpha version][vanilla-min]
 
 Given you placed the downloaded file in the same folder as your HTML file, in your HTML:
 ```html
@@ -85,7 +85,7 @@ Given you placed the downloaded file in the same folder as your HTML file, in yo
 
 In your HTML:
 ```html
-<script src="https://unpkg.com/js-circle-progress/dist/circle-progress.min.js" type="module"></script>
+<script src="https://unpkg.com/js-circle-progress@latest/dist/circle-progress.min.js" type="module"></script>
 
 <circle-progress value="50" max="100"></circle-progress>
 ```
@@ -231,7 +231,7 @@ If you want to contribute code, please
 Licensed under ([the MIT License][license])
 
 
-[vanilla-min]: https://unpkg.com/js-circle-progress/dist/circle-progress.min.js
+[vanilla-min]: https://unpkg.com/js-circle-progress@latest/dist/circle-progress.min.js
 [site]: https://tigrr.github.io/circle-progress/
 [examples]: https://tigrr.github.io/circle-progress/examples.html
 [license]: https://github.com/tigrr/circle-progress/blob/master/LICENSE
