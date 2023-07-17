@@ -16,7 +16,7 @@ The new version is not entirely backwards compatible with the old one. If you ne
 This version is currently in alpha. Any feedback is much appreciated.
 
 ### Breaking changes since v0
-- Internet Explorer is no longer supported.
+- Internet Explorer and Safari below version 14 are no longer supported.
 - The jQuery variant of the library is no longer provided.
 - The library is only shipped as an ES module.
 - The `clockwise` and `constrain` properties have been revised to `anticlockwise` and `unconstrained` correspondingly, which have the opposite meanings and are both `false` by default.

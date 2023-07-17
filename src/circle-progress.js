@@ -124,7 +124,7 @@ class CircleProgress extends CustomElement {
 				(descriptors, prop) => {
 					descriptors[prop] = {
 						get() {
-							return this.#get(prop);
+							return this._get(prop);
 						},
 						set(val) {
 							this.attr(prop, val);
@@ -169,14 +169,14 @@ class CircleProgress extends CustomElement {
 			x: 50,
 			y: 50,
 		});
-		this.#initText();
+		this._initText();
 		Object.keys(CircleProgress.props)
-			.forEach(key => key in opts && this.#set(key, opts[key]));
+			.forEach(key => key in opts && this._set(key, opts[key]));
 	}
 
 	// Called from CustomElement whenever attribute is changed
 	attributeUpdated(name, newValue) {
-		this.#set(name, newValue)
+		this._set(name, newValue)
 	}
 
 	#attrs = {}
@@ -194,7 +194,7 @@ class CircleProgress extends CustomElement {
 
 		if(typeof attrs === 'string') {
 			if(arguments.length === 1) {
-				return this.#get(attrs);
+				return this._get(attrs);
 			}
 			attrs = [[attrs, arguments[1]]];
 		}
@@ -203,7 +203,7 @@ class CircleProgress extends CustomElement {
 			attrs = Object.keys(attrs).map(key => [key, attrs[key]]);
 		}
 
-		attrs.forEach(([key, value]) => this.#set(key, value));
+		attrs.forEach(([key, value]) => this._set(key, value));
 		return this;
 	}
 
@@ -211,8 +211,8 @@ class CircleProgress extends CustomElement {
 	 * Get property value
 	 * Flushes pending updates.
 	 */
-	#get(key) {
-		this.#flushBatch();
+	_get(key) {
+		this._flushBatch();
 		return this.#attrs[key];
 	}
 
@@ -223,10 +223,10 @@ class CircleProgress extends CustomElement {
 	 * @param {*}      val Attribute value
 	 * @return {false|void} false if the value is the same as the current one, void otherwise
 	 */
-	#set(key, val) {
-		val = this.#formatValue(key, val);
+	_set(key, val) {
+		val = this._formatValue(key, val);
 		if(val === undefined) throw new TypeError(`Failed to set the ${key} property on CircleProgress: The provided value is non-finite.`);
-		this.#scheduleUpdate(key, val);
+		this._scheduleUpdate(key, val);
 	}
 
 	/**
@@ -244,15 +244,15 @@ class CircleProgress extends CustomElement {
 	 * @param  {string} key Property name
 	 * @param  {*}      val Property value
 	 */
-	#scheduleUpdate(key, val) {
+	_scheduleUpdate(key, val) {
 		if(!this.#batch) {
 			this.#batch = {};
-			this.updateComplete = Promise.resolve().then(() => this.#flushBatch());
+			this.updateComplete = Promise.resolve().then(() => this._flushBatch());
 		}
 		this.#batch[key] = val;
 	}
 
-	#flushBatch() {
+	_flushBatch() {
 		if (!this.#batch) {
 			return;
 		}
@@ -286,7 +286,7 @@ class CircleProgress extends CustomElement {
 				this.value = Math.min(this.max, Math.max(this.min, this.value));
 			}
 			if(key === 'textFormat') {
-				this.#initText();
+				this._initText();
 				const circleThickness = val === 'valueOnCircle' ? 16 : 8;
 				this.graph.sector.attr('stroke-width', circleThickness);
 				this.graph.circle.attr('stroke-width', circleThickness);
@@ -303,7 +303,7 @@ class CircleProgress extends CustomElement {
 	 * @param  {*}      val Attribute value
 	 * @return {*}          Formatted attribute value
 	 */
-	#formatValue(key, val) {
+	_formatValue(key, val) {
 		switch(key) {
 			case 'value':
 			case 'min':
@@ -347,7 +347,7 @@ class CircleProgress extends CustomElement {
 	 * This is done for optimization purposes as this method is called from within an animation.
 	 * @return {number} Angle in degrees
 	 */
-	#valueToAngle(value = this.value) {
+	_valueToAngle(value = this.value) {
 		return Math.min(
 			360,
 			Math.max(
@@ -362,7 +362,7 @@ class CircleProgress extends CustomElement {
 	 * Check wether the progressbar is in indeterminate state
 	 * @return {boolean} True if the state is indeterminate, false if it is determinate
 	 */
-	#isIndeterminate() {
+	_isIndeterminate() {
 		return ['value', 'max', 'min'].some(key => typeof this[key] !== 'number');
 	}
 
@@ -375,7 +375,7 @@ class CircleProgress extends CustomElement {
 	 *                   The radius is passed rather than calculated inside the function
 	 *                   for optimization purposes as this method is called from within an animation.
 	 */
-	#positionValueText(angle, r) {
+	_positionValueText(angle, r) {
 		const coords = polarToCartesian(r, angle);
 		this.graph.textVal.attr({x: 50 + coords.x, y: 50 + coords.y});
 	}
@@ -384,7 +384,7 @@ class CircleProgress extends CustomElement {
 	/**
 	 * Generate text representation of the values based on {@link CircleProgress#textFormat}
 	 */
-	#initText() {
+	_initText() {
 		const format = this.textFormat;
 		this.graph.text.content('');
 		if (typeof format === 'string' && ['valueOnCircle', 'horizontal', 'vertical'].includes(format)) {
@@ -450,30 +450,30 @@ class CircleProgress extends CustomElement {
 		const r = this.getRadius();
 
 		this.#animator?.cancel()
-		if(!this.#isIndeterminate()) {
+		if(!this._isIndeterminate()) {
 			const clockwise = !this.anticlockwise;
-			let angle = this.#valueToAngle();
+			let angle = this._valueToAngle();
 			this.graph.circle.attr('r', r);
 			if(this.animation !== 'none' && this.value !== this.graph.value) {
 				this.#animator = animator(this.animation, this.graph.value, this.value - this.graph.value, this.animationDuration, value => {
-					angle = this.#valueToAngle(value);
+					angle = this._valueToAngle(value);
 					this.graph.sector.attr('d', makeSectorPath(50, 50, r, startAngle, angle, clockwise));
-					this.#updateText(value === this.value ? value : Math.round(value), (2 * startAngle + angle) / 2, r);
+					this._updateText(value === this.value ? value : Math.round(value), (2 * startAngle + angle) / 2, r);
 				});
 			} else {
 				this.graph.sector.attr('d', makeSectorPath(50, 50, r, startAngle, angle, clockwise));
-				this.#updateText(this.value, (2 * startAngle + angle) / 2, r);
+				this._updateText(this.value, (2 * startAngle + angle) / 2, r);
 			}
 			this.graph.value = this.value;
 		} else {
-			this.#updateText(this.value, startAngle, r);
+			this._updateText(this.value, startAngle, r);
 		}
 	}
 
 	/**
 	 * Update texts
 	 */
-	#updateText(value, angle, r) {
+	_updateText(value, angle, r) {
 		if(typeof this.textFormat === 'function') {
 			this.graph.text.content(this.textFormat(value, this.max));
 			return
@@ -493,7 +493,7 @@ class CircleProgress extends CustomElement {
 				this.graph.textVal.el.textContent = value !== undefined ? value : this.indeterminateText;
 				this.graph.textMax.el.textContent = this.max !== undefined ? this.max : this.indeterminateText;
 				if(this.textFormat === 'valueOnCircle') {
-					this.#positionValueText(angle, r);
+					this._positionValueText(angle, r);
 				}
 		}
 	}
@@ -505,15 +505,15 @@ class CircleProgress extends CustomElement {
 	 */
 	getRadius() {
 		return 50 - Math.max(
-			this.#getStrokeWidth(this.graph.circle.el),
-			this.#getStrokeWidth(this.graph.sector.el),
+			this._getStrokeWidth(this.graph.circle.el),
+			this._getStrokeWidth(this.graph.sector.el),
 		) / 2;
 	}
 
 	/**
 	 * Get SVG element's stroke-width
 	 */
-	#getStrokeWidth(el) {
+	_getStrokeWidth(el) {
 		return Number.parseFloat(this.ownerDocument.defaultView?.getComputedStyle(el)['stroke-width'] || 0);
 	}
 }

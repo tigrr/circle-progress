@@ -50,7 +50,7 @@ export default class CustomElement extends HTMLElement {
 	 * @param {string} name Attribute name
 	 * @return {string} Property name
 	 */
-	#attrNameToProp(name) {
+	_attrNameToProp(name) {
 		return this.#attrToPropDict[name] ?? name
 	}
 
@@ -59,7 +59,7 @@ export default class CustomElement extends HTMLElement {
 	 * @param {string} name Property name
 	 * @return {string} Attribute name
 	 */
-	#propToAttrName(name) {
+	_propToAttrName(name) {
 		return this.#propToAttrDict[name] ?? name
 	}
 
@@ -69,7 +69,7 @@ export default class CustomElement extends HTMLElement {
 	 * @param {(string|null)} value Attribute value
 	 * @return Property value
 	 */
-	#attrValToProp(name, value) {
+	_attrValToProp(name, value) {
 		if (this.#boolProps.has(name)) {
 			return value !== null
 		}
@@ -83,13 +83,13 @@ export default class CustomElement extends HTMLElement {
 			this.#bailOutAttrUpdate = false
 			return
 		}
-		this.attributeUpdated?.(this.#attrNameToProp(name), this.#attrValToProp(name, newValue))
+		this.attributeUpdated?.(this._attrNameToProp(name), this._attrValToProp(name, newValue))
 	}
 
 	reflectPropToAttribute(prop) {
 		const value = this[prop]
 		this.#bailOutAttrUpdate = true
-		const attr = this.#propToAttrName(prop)
+		const attr = this._propToAttrName(prop)
 		if (this.#boolProps.has(prop)) {
 			if (value) {
 				this.setAttribute(attr, '')
