@@ -133,20 +133,28 @@ const cp = new CircleProgress({
 })
 ```
 
+And finally you can set properties as attributes on the element in HTML:
+
+```html
+<circle-progress value="50" max="100"></circle-progress>
+```
+
+Some attribute names are different than the corresponding property names. Property names are camelCased, whereas attribute names are kebab-cased. For example, the `startAngle` property is set as `start-angle` attribute.
+
 #### All available properties
 
-| Option            | Type    | Default  | Description |
-| ----------------- | ------- | -------- | ----------- |
-| value             | Number  | Indeterminate | Current value |
-| min               | Number  | 0        | Minimum value |
-| max               | Number  | 1        | Maximum value |
-| startAngle        | Number  | 0        | Starting angle in degrees. Angle of 0 points straight up. Direction depends on `anticlockwise`. |
-| anticlockwise     | Boolean | false    | Whether to rotate anti-clockwise (true) or clockwise (false) |
-| unconstrained     | Boolean | false    | Whether the value should be constrained between `min` and `max`. If false, values over `max` will be truncated to `max` and values under `min` will be set to `min`. |
-| indeterminateText | String | '?' | Text to display as the value when it is indeterminate |
-| textFormat | String or Function | 'horizontal' | Text layout for value, min, max. <br> You can pass either one of the possible keywords: <br> `horizontal` - <samp>value/max</samp> <br> `vertical` - value is shown over max <br> `percent` - <samp>value%</samp> <br> `value` - only value is shown <br> `valueOnCircle` - the value is painted on top of the filled region on the circle <br> `none` - no text is shown. <br>Alternatively you can provide your own function, which will be called each time progress is updated with value and max as arguments, and is expected to return a string of HTML to insert in the center of the progress circle. **Attention! The string returned from your function will be inserted as HTML. Do not pass any dynamic content such as variables coming from elsewhere to avoid XSS vulnerability.** |
-| animation  | String or Function | 'easeInOutCubic' | Animation easing function. Can be a string keyword (see the table below for available easings) or `'none'`.<br>Alternatively, you can pass your own function with the signature <br>`function(time, startAngle, angleDiff, duration)`.<br> The function will be called on each animation frame with the current time (milliseconds since animation start), starting angle, difference in angle (i.e. endAngle - startAngle) and animation duration as arguments, and must return the current angle. |
-| animationDuration | Number | 600 | Animation duration in milliseconds |
+| Property          | Attribute     | Type    | Default  | Description |
+| ----------------- | ------------- | ------- | -------- | ----------- |
+| value             | value         | Number  | Indeterminate | Current value |
+| min               | min           | Number  | 0        | Minimum value |
+| max               | max           | Number  | 1        | Maximum value |
+| startAngle        | start-angle   | Number  | 0        | Starting angle in degrees. Angle of 0 points straight up. Direction depends on `anticlockwise`. |
+| anticlockwise     | anticlockwise | Boolean | false    | Whether to rotate anti-clockwise (true) or clockwise (false) |
+| unconstrained     | unconstrained | Boolean | false    | Whether the value should be constrained between `min` and `max`. If false, values over `max` will be truncated to `max` and values under `min` will be set to `min`. |
+| indeterminateText | indeterminate-text | String | '?' | Text to display as the value when it is indeterminate |
+| textFormat        | text-format   | String or Function | 'horizontal' | Text layout for value, min, max. <br> You can pass either one of the possible keywords: <br> `horizontal` - <samp>value/max</samp> <br> `vertical` - value is shown over max <br> `percent` - <samp>value%</samp> <br> `value` - only value is shown <br> `valueOnCircle` - the value is painted on top of the filled region on the circle <br> `none` - no text is shown. <br>Alternatively you can provide your own function, which will be called each time progress is updated with value and max as arguments, and is expected to return a string of HTML to insert in the center of the progress circle. **Attention! The string returned from your function will be inserted as HTML. Do not pass any dynamic content such as variables coming from elsewhere to avoid XSS vulnerability.** |
+| animation         | animation     | String or Function | 'easeInOutCubic' | Animation easing function. Can be a string keyword (see the table below for available easings) or `'none'`.<br>Alternatively, you can pass your own function with the signature <br>`function(time, startAngle, angleDiff, duration)`.<br> The function will be called on each animation frame with the current time (milliseconds since animation start), starting angle, difference in angle (i.e. endAngle - startAngle) and animation duration as arguments, and must return the current angle. |
+| animationDuration | animation-duration | Number | 600 | Animation duration in milliseconds |
 
 
 The predefined animation easing functions:
