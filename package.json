@@ -1,6 +1,6 @@
 {
 	"name": "js-circle-progress",
-	"version": "1.0.0-beta.0",
+	"version": "1.0.0",
 	"description": "Responsive, accessible, animated, stylable with CSS circular progress bar available as plain (vanilla) JS and jQuery plugin.",
 	"keywords": [
 		"progressbar",
@@ -34,12 +34,12 @@
 	},
 	"devDependencies": {
 		"@esm-bundle/chai": "^4.3.4-fix.0",
-		"@rollup/plugin-terser": "^0.4.3",
-		"@web/dev-server": "^0.3.0",
-		"@web/dev-server-import-maps": "^0.1.1",
-		"@web/test-runner": "^0.17.0",
-		"@web/test-runner-playwright": "^0.10.1",
-		"rollup": "^3.26.2",
-		"typescript": "^5.1.6"
+		"@rollup/plugin-terser": "^0.4.4",
+		"@web/dev-server": "^0.4.6",
+		"@web/dev-server-import-maps": "^0.2.1",
+		"@web/test-runner": "^0.20.2",
+		"@web/test-runner-playwright": "^0.11.1",
+		"rollup": "^4.52.5",
+		"typescript": "^5.9.3"
 	}
 }

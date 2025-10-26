@@ -129,7 +129,7 @@
 	width: 300px;
 }
 
-.intro-progress::part(svg) {
+.intro-progress::part(base) {
 	width: 100%;
 	height: auto;
 }

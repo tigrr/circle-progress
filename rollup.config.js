@@ -1,7 +1,11 @@
 import fs from 'node:fs/promises'
 import terser from '@rollup/plugin-terser'
-import pkg from './package.json' assert { type: 'json' }
+import pkg from './package.json' with { type: 'json' }
 
+/**
+ * Clean build directory
+ * @param {string} path Path to clean
+ */
 const clean = (path) => ({
 	name: 'clean',
 	buildStart() {
